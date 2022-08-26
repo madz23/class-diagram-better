@@ -1,0 +1,49 @@
+﻿  ClassInfo.cpp
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\ClassInfo.cpp(40,43): warning C4458: declaration of 'name' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\ClassInfo.hh(44,17): message : see declaration of 'ClassInfo::name'
+  ClassParser.cpp
+  Edge.cpp
+  Field.cpp
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Field.cpp(23,38): warning C4458: declaration of 'name' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Field.hh(33,17): message : see declaration of 'Field::name'
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Field.cpp(30,32): warning C4458: declaration of 'type' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Field.hh(34,10): message : see declaration of 'Field::type'
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Field.cpp(37,41): warning C4458: declaration of 'scope' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Field.hh(35,17): message : see declaration of 'Field::scope'
+  FileManager.cpp
+  Graph.cpp
+  GraphBuilder.cpp
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  imgui_impl_dx11.cpp
+  imgui_impl_win32.cpp
+  main.cpp
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\main.cpp(301,102): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\main.cpp(301,61): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\main.cpp(302,104): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\main.cpp(302,63): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\main.cpp(349,51): warning C4100: 'pos': unreferenced formal parameter
+  Method.cpp
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Method.cpp(25,39): warning C4458: declaration of 'name' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Method.hh(35,17): message : see declaration of 'Method::name'
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Method.cpp(32,33): warning C4458: declaration of 'type' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Method.hh(36,10): message : see declaration of 'Method::type'
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Method.cpp(39,42): warning C4458: declaration of 'scope' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Method.hh(37,17): message : see declaration of 'Method::scope'
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Method.cpp(46,51): warning C4458: declaration of 'parameters' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Method.hh(38,17): message : see declaration of 'Method::parameters'
+  Node.cpp
+  Type.cpp
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Type.cpp(42,38): warning C4458: declaration of 'name' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Type.hh(40,17): message : see declaration of 'Type::name'
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Type.cpp(49,47): warning C4458: declaration of 'isCollection' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Type.hh(41,10): message : see declaration of 'Type::isCollection'
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Type.cpp(56,58): warning C4458: declaration of 'collectionType' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Type.hh(42,17): message : see declaration of 'Type::collectionType'
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Type.cpp(63,56): warning C4458: declaration of 'namespaceName' hides class member
+C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Type.hh(43,17): message : see declaration of 'Type::namespaceName'
+  Generating Code...
+  ClassDiagramToolUI.vcxproj -> C:\Users\beard\Desktop\dvbDocuments\COURSES\CS4488S17-F19--S22\Fall22\potentialProjects\F22classDiagramTool\ClassDiagramToolUI-1.0\Debug\ClassDiagramToolUI.exe
