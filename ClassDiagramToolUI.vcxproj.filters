@@ -7,6 +7,9 @@
     <Filter Include="sources">
       <UniqueIdentifier>{08e36723-ce4f-4cff-9662-c40801cf1acf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImGuiFileDialog-0.6.4">
+      <UniqueIdentifier>{2fe2897e-0b34-473d-a6f6-e70d4ed60830}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -53,6 +56,21 @@
     </ClInclude>
     <ClInclude Include="Type.hh">
       <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog-0.6.4\stb\stb_image_resize.h">
+      <Filter>ImGuiFileDialog-0.6.4</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog-0.6.4\stb\stb_image.h">
+      <Filter>ImGuiFileDialog-0.6.4</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog-0.6.4\ImGuiFileDialogConfig.h">
+      <Filter>ImGuiFileDialog-0.6.4</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog-0.6.4\ImGuiFileDialog.h">
+      <Filter>ImGuiFileDialog-0.6.4</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiFileDialog-0.6.4\dirent\dirent.h">
+      <Filter>ImGuiFileDialog-0.6.4</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +127,9 @@
     </ClCompile>
     <ClCompile Include="Type.cpp">
       <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiFileDialog-0.6.4\ImGuiFileDialog.cpp">
+      <Filter>ImGuiFileDialog-0.6.4</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

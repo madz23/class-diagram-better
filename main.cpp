@@ -16,6 +16,7 @@
 #include <tchar.h>
 #include <unordered_map>
 #include "GraphBuilder.hh"
+#include "ImGuiFileDialog-0.6.4/ImGuiFileDialog.h"
 
 // Data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -145,6 +146,7 @@ int main(int, char**)
         ImGui::InputText(" ", buf, 256);
         ImGui::SameLine();
         if (ImGui::Button("Generate")) {
+            //std::strcpy(buf, "test");
             try {
                 graph = GraphBuilder::build(buf, recursive);
                 initNodePositions(graph);
@@ -155,6 +157,26 @@ int main(int, char**)
             }
         }
         ImGui::Checkbox("Search Subfolders", &recursive);   
+        ImGui::SameLine();
+        if (ImGui::Button("Browse Folders")) {
+            ImGuiFileDialog::Instance()->OpenDialog("ChooseDirDlgKey", "Choose a Directory", nullptr, ".");
+        }
+        // display
+        ImVec2 maxSize = ImVec2((float)viewport->Size.x, (float)viewport->Size.y);// The full display area
+        ImVec2 minSize = ImVec2((float)viewport->Size.x/2, (float)viewport->Size.y/2);//maxSize * 0.5f;  // Half the display area
+        if (ImGuiFileDialog::Instance()->Display("ChooseDirDlgKey", ImGuiWindowFlags_NoCollapse, minSize, maxSize)){
+        // action if OK
+            if (ImGuiFileDialog::Instance()->IsOk()){
+                //std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName(); gives file name but we're slecting a dir so unnecessary
+                std::string filePath = ImGuiFileDialog::Instance()->GetCurrentPath();
+                std::strcpy(buf, filePath.c_str());
+                // action
+            }
+
+                // close
+                ImGuiFileDialog::Instance()->Close();
+            }
+        
         ImGui::End();
 
         // Canvas
