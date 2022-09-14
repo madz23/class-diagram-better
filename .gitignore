@@ -1,3 +1,4 @@
+# build files to be ignored
 Debug/
-.vs/
 bin/
+.vs*
