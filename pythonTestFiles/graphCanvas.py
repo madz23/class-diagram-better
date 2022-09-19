@@ -11,10 +11,9 @@ def find(list, filter):
 
 screen = T.Tk()
 canvas = T.Canvas(screen, bg="white", height=1000, width=1000)
-random.seed(7)
 
 
-graph = alg.random(alg.nodes,alg.edges,1000,1000)
+graph = alg.randomMinStdDevAndCross(alg.nodes,alg.edges,1000,1000,1000)
 
 width = 100
 height = 100
@@ -29,9 +28,21 @@ for edge in graph.edges:
     node2 = edge.node2
     if(len(edge.corners) == 0):
         canvas.create_line(node1.x,node1.y,node2.x,node2.y,arrow = T.LAST, width = 5)
+    else:
+        x1 = node1.x
+        y1 = node1.y
+        for i in range(len(edge.corners)):
+            x2 = edge.corners[i][0]
+            y2 = edge.corners[i][1]
+            canvas.create_line(x1,y1,x2,y2,arrow = T.LAST, width = 5)
+            x1 = x2
+            y1 = y2
+        x2 = node2.x
+        y2 = node2.y
+        canvas.create_line(x1,y1,x2,y2,arrow = T.LAST, width = 5)
+            
 
-
-print(graph.crossingEdges())
+print(graph.deviationOfEdges())
 
 canvas.pack()
 screen.mainloop()

@@ -28,3 +28,46 @@ def random(n, e, width, height):
         edgeList.append(G.edge(nodeList[edge[0]],nodeList[edge[1]]))
     return G.graphWithLocation(nodeList, edgeList)
 
+def randomMinEdgeCross(n, e, width, height, iteration = 1000):
+    graph = random(n, e, width, height)
+    for i in range(iteration):
+        tempgraph = random(n, e, width, height)
+        if(tempgraph.crossingEdges() < graph.crossingEdges()):
+            graph = tempgraph
+    return graph
+
+def randomMinStdDev(n, e, width, height, iteration = 1000):
+    graph = random(n, e, width, height)
+    for i in range(iteration):
+        tempgraph = random(n, e, width, height)
+        if(tempgraph.deviationOfEdges() < graph.deviationOfEdges()):
+            graph = tempgraph
+    return graph
+
+def randomMinStdDevAndCross(n, e, width, height, iteration = 1000):
+    graph = random(n, e, width, height)
+    for i in range(iteration):
+        tempgraph = random(n, e, width, height)
+        if(tempgraph.crossingEdges() < graph.crossingEdges()):
+            graph = tempgraph
+        elif (tempgraph.crossingEdges() == graph.crossingEdges()):
+            if(tempgraph.deviationOfEdges() < graph.deviationOfEdges()):
+                graph = tempgraph
+
+    return graph
+
+
+def randomOrthogonal(n, e, width, height):
+    nodeList = []
+    edgeList = []
+    for node in n:
+        x = R.randint(20,width-120)
+        # x = math.ceil(x / (width/10)) *width/10
+        y = R.randint(20,height-120)
+        # y = math.ceil(y / (width/10)) *width/10
+        nodeList.append(G.node(node, x, y))
+    for edge in e:
+        edgeList.append(G.edge(nodeList[edge[0]],nodeList[edge[1]],[(nodeList[edge[0]].x,nodeList[edge[1]].y)]))
+    return G.graphWithLocation(nodeList, edgeList)
+
+
