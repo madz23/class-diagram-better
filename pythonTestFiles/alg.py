@@ -1,3 +1,4 @@
+import math
 import graphWithLocation as G
 import random as R
 #accept a param that will determine which set is used (test set by default)
@@ -14,13 +15,16 @@ graph = [nodes,edges]
 # build a randomized set
 
 # algorthimize it
-def algorithm_1(n, e, width, height):
+def random(n, e, width, height):
     nodeList = []
     edgeList = []
     for node in n:
         x = R.randint(20,width-120)
+        x = math.ceil(x / (width/10)) *width/10
         y = R.randint(20,height-120)
+        y = math.ceil(y / (width/10)) *width/10
         nodeList.append(G.node(node, x, y))
     for edge in e:
-        edgeList.append(G.edge(edge[0],edge[1]))
+        edgeList.append(G.edge(nodeList[edge[0]],nodeList[edge[1]]))
     return G.graphWithLocation(nodeList, edgeList)
+
