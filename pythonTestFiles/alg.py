@@ -13,6 +13,18 @@ graph = [nodes,edges]
 
 
 # build a randomized set
+def randomGraph(n,e):
+    g = [[i for i in range(n)],[]]
+    if(e >= n**2): e = n**2
+    i = 0
+    while(i < e):
+        temp = (g[0][R.randint(0,len(g[0])-1)],g[0][R.randint(0,len(g[0])-1)])
+        if temp not in g[1]:
+            i += 1
+            g[1].append(temp)
+        print(e)
+
+    return g
 
 # algorthimize it
 def random(n, e, width, height):

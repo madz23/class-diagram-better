@@ -12,18 +12,19 @@ def find(list, filter):
 screen = T.Tk()
 canvas = T.Canvas(screen, bg="white", height=1000, width=1000)
 
+graph = alg.randomGraph(10, 20)
 
-graph = alg.randomMinStdDevAndCross(alg.nodes,alg.edges,1000,1000,1000)
+visgraph = alg.randomMinStdDevAndCross(graph[0],graph[1],1000,1000,1000)
 
 width = 100
 height = 100
 fillColor = "red"
 
-for node in graph.nodes:
+for node in visgraph.nodes:
     canvas.create_rectangle(node.x,node.y,node.x+width,node.y+height,fill=fillColor)
     canvas.create_text((node.x+width/2, node.y+height/2), text=node.name)
 
-for edge in graph.edges:
+for edge in visgraph.edges:
     node1 = edge.node1
     node2 = edge.node2
     if(len(edge.corners) == 0):
@@ -41,8 +42,7 @@ for edge in graph.edges:
         y2 = node2.y
         canvas.create_line(x1,y1,x2,y2,arrow = T.LAST, width = 5)
             
-
-print(graph.deviationOfEdges())
+print(len(graph[1]))
 
 canvas.pack()
 screen.mainloop()

@@ -25,7 +25,7 @@ class graphWithLocation:
     def deviationOfEdges(self):
         data = []
         for edge in self.edges:
-            length = sqrt(abs((round(edge.node1.x - edge.node2.x))^2) + abs(round((edge.node1.y - edge.node2.y))^2))
+            length = sqrt(abs((round(edge.node1.x - edge.node2.x))**2) + abs(round((edge.node1.y - edge.node2.y))**2))
             data.append(length)
         return stdev(data)
 
