@@ -3,21 +3,28 @@ import tkinter as T
 from turtle import fillcolor;
 import alg
 import random
+import json
 
 def find(list, filter):
     for x in list:
         if filter(x):
             return x
 
+settings_file = open('alg.json')
+
+settings = json.load(settings_file)
+
+print(settings)
+
 screen = T.Tk()
-canvas = T.Canvas(screen, bg="white", height=1000, width=1000)
+canvas = T.Canvas(screen, bg="white", height=settings["screen_height"], width=settings["screen_width"])
 
 graph = alg.randomGraph(10, 20)
 
-visgraph = alg.randomMinStdDevAndCross(graph[0],graph[1],1000,1000,1000)
+visgraph = alg.randomMinStdDevAndCross(graph[0],graph[1],settings["screen_width"],settings["screen_height"],1000)
 
-width = 100
-height = 100
+width = settings["box_width"]
+height = settings["box_height"]
 fillColor = "red"
 
 for node in visgraph.nodes:
