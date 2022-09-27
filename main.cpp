@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include "GraphBuilder.hh"
 #include "ImGuiFileDialog-0.6.4/ImGuiFileDialog.h"
+#include "testingCImg.hh"
 
 // Data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -44,6 +45,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 // Main code
 int main(int, char**)
 {
+    sudoMain();
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
