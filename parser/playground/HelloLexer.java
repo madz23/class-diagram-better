@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from Hello.g4 by ANTLR 4.9.3
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -8,9 +8,9 @@ import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
-@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
+@SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class HelloLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.9.3", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -102,26 +102,15 @@ public class HelloLexer extends Lexer {
 	public ATN getATN() { return _ATN; }
 
 	public static final String _serializedATN =
-		"\u0004\u0000\u0003\u0019\u0006\uffff\uffff\u0002\u0000\u0007\u0000\u0002"+
-		"\u0001\u0007\u0001\u0002\u0002\u0007\u0002\u0001\u0000\u0001\u0000\u0001"+
-		"\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0001\u0004\u0001\u000f"+
-		"\b\u0001\u000b\u0001\f\u0001\u0010\u0001\u0002\u0004\u0002\u0014\b\u0002"+
-		"\u000b\u0002\f\u0002\u0015\u0001\u0002\u0001\u0002\u0000\u0000\u0003\u0001"+
-		"\u0001\u0003\u0002\u0005\u0003\u0001\u0000\u0002\u0001\u0000az\u0003\u0000"+
-		"\t\n\r\r  \u001a\u0000\u0001\u0001\u0000\u0000\u0000\u0000\u0003\u0001"+
-		"\u0000\u0000\u0000\u0000\u0005\u0001\u0000\u0000\u0000\u0001\u0007\u0001"+
-		"\u0000\u0000\u0000\u0003\u000e\u0001\u0000\u0000\u0000\u0005\u0013\u0001"+
-		"\u0000\u0000\u0000\u0007\b\u0005h\u0000\u0000\b\t\u0005e\u0000\u0000\t"+
-		"\n\u0005l\u0000\u0000\n\u000b\u0005l\u0000\u0000\u000b\f\u0005o\u0000"+
-		"\u0000\f\u0002\u0001\u0000\u0000\u0000\r\u000f\u0007\u0000\u0000\u0000"+
-		"\u000e\r\u0001\u0000\u0000\u0000\u000f\u0010\u0001\u0000\u0000\u0000\u0010"+
-		"\u000e\u0001\u0000\u0000\u0000\u0010\u0011\u0001\u0000\u0000\u0000\u0011"+
-		"\u0004\u0001\u0000\u0000\u0000\u0012\u0014\u0007\u0001\u0000\u0000\u0013"+
-		"\u0012\u0001\u0000\u0000\u0000\u0014\u0015\u0001\u0000\u0000\u0000\u0015"+
-		"\u0013\u0001\u0000\u0000\u0000\u0015\u0016\u0001\u0000\u0000\u0000\u0016"+
-		"\u0017\u0001\u0000\u0000\u0000\u0017\u0018\u0006\u0002\u0000\u0000\u0018"+
-		"\u0006\u0001\u0000\u0000\u0000\u0003\u0000\u0010\u0015\u0001\u0006\u0000"+
-		"\u0000";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\5\33\b\1\4\2\t\2"+
+		"\4\3\t\3\4\4\t\4\3\2\3\2\3\2\3\2\3\2\3\2\3\3\6\3\21\n\3\r\3\16\3\22\3"+
+		"\4\6\4\26\n\4\r\4\16\4\27\3\4\3\4\2\2\5\3\3\5\4\7\5\3\2\4\3\2c|\5\2\13"+
+		"\f\17\17\"\"\2\34\2\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\3\t\3\2\2\2\5\20"+
+		"\3\2\2\2\7\25\3\2\2\2\t\n\7j\2\2\n\13\7g\2\2\13\f\7n\2\2\f\r\7n\2\2\r"+
+		"\16\7q\2\2\16\4\3\2\2\2\17\21\t\2\2\2\20\17\3\2\2\2\21\22\3\2\2\2\22\20"+
+		"\3\2\2\2\22\23\3\2\2\2\23\6\3\2\2\2\24\26\t\3\2\2\25\24\3\2\2\2\26\27"+
+		"\3\2\2\2\27\25\3\2\2\2\27\30\3\2\2\2\30\31\3\2\2\2\31\32\b\4\2\2\32\b"+
+		"\3\2\2\2\5\2\22\27\3\b\2\2";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

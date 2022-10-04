@@ -2,3 +2,6 @@ Debug/
 .vs/
 bin/
 pythonTestFiles/__pycache__
+
+
+.class
