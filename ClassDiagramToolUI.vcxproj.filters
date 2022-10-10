@@ -81,6 +81,7 @@
     <ClInclude Include="testingCImg.hh">
       <Filter>sources</Filter>
     </ClInclude>
+    <ClInclude Include="PrintOnPaper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -143,6 +144,7 @@
     <ClCompile Include="testingCImg.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="PrintOnPaper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\examples\README.txt" />

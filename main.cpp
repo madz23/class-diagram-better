@@ -17,7 +17,7 @@
 #include <unordered_map>
 #include "GraphBuilder.hh"
 #include "ImGuiFileDialog-0.6.4/ImGuiFileDialog.h"
-#include "testingCImg.hh"
+#include "PrintOnPaper.h"
 
 // Data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -45,7 +45,11 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 // Main code
 int main(int, char**)
 {
-    sudoMain();
+    PrintOnPaper pop(4, 4);
+    //pop.display();
+    //PrintOnPaper::sudoMain();
+    return 0;
+
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
@@ -259,7 +263,8 @@ void initNodePositions(Graph<ClassInfo> graph) {
 
 // Draws the class diagram
 void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
-    
+    //PrintOnPaper::nodeBs(graph);
+    //std::getchar();
     ImVec2 scroll = ImVec2(-ImGui::GetScrollX(), -ImGui::GetScrollY());
 
     // Nodes
