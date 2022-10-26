@@ -21,6 +21,7 @@ class PrintOnPaper
 
 public:
 	PrintOnPaper(int height, int width) {
+		
 		const unsigned char bluegreen[] = { 0,170,255 };
 		const unsigned char grey[] = { 220,220,220 };
 		const unsigned char black[] = { 0,0,0 };
@@ -41,6 +42,7 @@ public:
 
 			}
 		}
+		printTextOnSquare(1, 0, getText(), &bg);
 		bg.draw_text(SPACING, SPACING, "testing",black, grey,1,16);
 		bg.draw_text(SPACING, SPACING+16, "testing", black, grey, 1, 16);
 		drawArrowFrom(0,0,1,1, &bg);
@@ -129,20 +131,38 @@ private:
 		pixWidth = nodeWidth * PIX_PER_NODE_WIDTH;
 	}
 
-	std::vector < std::string> *getText() {
+	std::vector < std::string> getText() {
 		std::vector<std::string> ret;
 		ret.push_back("testdsf");
 		ret.push_back("sdfjsd;lf");
 		ret.push_back("uwudsfs");
+		return ret;
 	}
 	
-	void printTextOnSquare(int x, int y, std::vector<std::string> textVect) {
-		int pixX = x * PIX_PER_NODE_WIDTH;
-		int pixY = x * PIX_PER_NODE_HEIGHT;
-		int startPixX = pixX + SPACING;
-		int startPixY = pixY + SPACING;
-		int textSpacing = 15;
+	void printTextOnSquare(int x, int y, std::vector<std::string> textVect, CImg<unsigned char> * c) {
+		//convert vector of strings to array of const char * , not sure why it doesn't need to be a const char * const but it works and I no longer care
 		
+		const int size = textVect.size();
+		const char ** corrected = new const char * [size];
+		
+		std::vector<std::string>::iterator iter;
+		for (int x = 0; x < size;x++) {
+			corrected[x] = textVect.at(x).c_str();
+		}
+		
+		
+		const unsigned char grey[] = { 220,220,220 };
+		const unsigned char black[] = { 0,0,0 };
+		int startPixX = x * PIX_PER_NODE_WIDTH;
+		int startPixY = x * PIX_PER_NODE_HEIGHT;
+		int pixX = startPixX + SPACING;
+		int pixY = startPixY + SPACING;
+		int textSpacing = 17;
+		for (int x = 0;x < size; x++) {
+			c->draw_text(pixX, pixY, corrected[x], black, grey, 1, 16);
+			pixY += textSpacing;
+		}
+		delete[] corrected;
 	}
 };
 
