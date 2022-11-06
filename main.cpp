@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include "GraphBuilder.hh"
 #include "ImGuiFileDialog-0.6.4/ImGuiFileDialog.h"
+#include "Node.hh"
 
 // Data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -27,7 +28,7 @@ static ID3D11RenderTargetView*  g_mainRenderTargetView = NULL;
 // Forward declarations of graph drawing fucntions
 void initNodePositions(Graph<ClassInfo> graph);
 void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList);
-void drawNode(ClassInfo classInfo, ImVec2 pos, ImDrawList* drawList);
+void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList);
 void displayClassInfo(ClassInfo classInfo, ImVec2 pos);
 
 // Inline operators for ImVec2
@@ -201,6 +202,10 @@ int main(int, char**)
         // ClassDiagramTool code end
         //
 
+        // Logic for drag and drop functionality
+        ImVec2 windowPosition = ImGui::GetWindowPos();
+        ImVec2 cursorPosition = ImGui::GetCursorPos();
+        ImVec2 newPosition(windowPosition.x + cursorPosition.x, windowPosition.x - cursorPosition.y);
 
         // Rendering
         ImGui::Render();
@@ -265,7 +270,7 @@ void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
         auto search = nodeToPosMap.find(node.getID());
         if (search != nodeToPosMap.end()){
             ImVec2 nodePos = search->second;
-            drawNode(node.getData(), nodePos + scroll, drawList);
+            drawNode( node, nodePos + scroll, drawList);
         }
     }
 
@@ -348,8 +353,9 @@ void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
 }
 
 // Draws a node
-void drawNode(ClassInfo classInfo, ImVec2 pos, ImDrawList* drawList) {
+void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList) {
     // Node contents
+    ClassInfo classInfo = node.getData();
     drawList->ChannelsSetCurrent(1);
     ImGui::SetCursorScreenPos(pos + ImVec2(7.5f, 8.0f));
     ImGui::BeginGroup();
@@ -357,6 +363,20 @@ void drawNode(ClassInfo classInfo, ImVec2 pos, ImDrawList* drawList) {
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.20f, 0.20f, 0.20f, 0.5f));
     if (ImGui::Button(&classInfo.getName()[0], ImVec2(nodeWidth - 15, nodeHeight - 16)))
         ImGui::OpenPopup(&classInfo.getName()[0]);
+
+    if (ImGui::IsMouseDragging(ImGui::Button("+")) && ImGui::IsItemActive()) {
+        //std::cout << "Herro" << "\n";
+        int nextPos = floorf((ImGui::GetMousePos().y - pos.x) / pos.y);
+        //std::cout << ImGui::GetMousePos().x << "\t" << ImGui::GetMousePos().y << "\n";
+        //newValue = true;
+        // drawNode(node, ImGui::GetMousePos(), drawList);   
+        auto search = nodeToPosMap.find(node.getID());
+        if (search != nodeToPosMap.end()) {
+            ImVec2 nodePos = search->second;
+            std::cout << node.getID() << nodePos.x << "\t" << nodePos.y << "\n";
+        }
+    }
+   
     ImGui::PopStyleColor(2);
     displayClassInfo(classInfo, pos);
     ImGui::EndGroup();
