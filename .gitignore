@@ -1,9 +1,13 @@
+# build files to be ignored
 Debug/
-.vs/
 bin/
+<<<<<<< HEAD
 pythonTestFiles/__pycache__
 
 
 .class
 
 .vscode
+=======
+.vs*
+>>>>>>> develop

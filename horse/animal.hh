@@ -11,4 +11,5 @@ class Animal {
     public:
         int age;
         string name;
+        string size;
 };
