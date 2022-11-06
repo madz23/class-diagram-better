@@ -7,7 +7,11 @@ pythonTestFiles/__pycache__
 
 .class
 
+<<<<<<< HEAD
 .vscode
 =======
 .vs*
 >>>>>>> develop
+=======
+
+>>>>>>> 206e94e722dbbc785c0f357811ae4f8e013668a2
