@@ -24,8 +24,8 @@ class PrintOnPaper
 	//CImg<unsigned char> bg;
 
 public:
-	PrintOnPaper(Graph<ClassInfo> graph) {
 
+	PrintOnPaper(Graph<ClassInfo> graph) {
 		const unsigned char bluegreen[] = { 0,170,255 };
 		const unsigned char grey[] = { 220,220,220 };
 		const unsigned char black[] = { 0,0,0 };
@@ -51,6 +51,7 @@ public:
 				yy += 1;
 			}
 		}
+
 		
 		nodeHeight = 0;
 		nodeWidth = 0;
@@ -156,6 +157,7 @@ private:
 		pixWidth = nodeWidth * PIX_PER_NODE_WIDTH;
 	}
 
+
 	std::vector <std::string> getText(ClassInfo classInfo) {
 		std::vector<std::string> ret;
 		// Name
@@ -225,6 +227,7 @@ private:
 
 		drawRectByNode(n.getX(), n.getY(), c);
 		printTextOnSquare(n.getX(), n.getY(), getText(n.getData()), c);
+
 	}
 };
 
