@@ -54,7 +54,7 @@ public:
 
 		
 		nodeHeight = 0;
-		nodeWidth = 0;
+		nodeWidth = 0; // calculates the needed height and width of the pane
 		for (int i = 0; i < nodes.size(); i++) {
 			std::cout <<"b" << std::endl << nodes.at(i).getX() << std::endl << nodes.at(i).getY();
 			if (nodes.at(i).getX() > nodeWidth) {
@@ -72,13 +72,14 @@ public:
 		pixHeight = nodeHeight * PIX_PER_NODE_HEIGHT;
 		pixWidth = nodeWidth * PIX_PER_NODE_WIDTH;
 		CImg<unsigned char> bg(pixWidth, pixHeight, 2, 3, 255); // I have no idea what the 2 and 3 are but the 255 means a white background
+		drawEdges(graph, &bg, nodes);
 		//actual loop to draw all nodes
 		for (int i = 0; i < nodes.size(); i++) {
 			drawNode(nodes.at(i), &bg);
 			//std::cout << std::endl << getText(node.getData()).at(0);
 		}
 		//drawArrowFrom(0, 0, 1, 1, &bg);
-
+		
 
 
 		CImgDisplay dsp(pixWidth, pixHeight, "uwu", 0);
@@ -88,16 +89,6 @@ public:
 		bg.save_bmp("secondaryTest.bmp");
 	}
 
-
-	static int nodeBs(Graph<ClassInfo> g) {
-		std::cout << g.getEdges()[0].getStartNode();
-		std::cout << g.getEdges()[0].getEndNode() << std::endl;
-		std::cout << g.getNodes()[0].getData().getBases()[0] << std::endl;
-		std::cout << g.getNodes()[0].getData().getFields()[0].getName() << std::endl;
-		std::cout << g.getNodes()[0].getData().getMethods()[0].getName() << std::endl;
-		std::cout << g.getNodes()[0].getData().getName();
-		return 0;
-	}
 
 	// returns coords of top left corner of square x. 
 	std::pair<int, int> getCornerOfPosition(int x) {
@@ -148,7 +139,11 @@ private:
 		else if (xDif == 0) {
 			xAdd = .5 * PIX_PER_NODE_WIDTH;
 		}
-		c->draw_arrow((fromX * PIX_PER_NODE_WIDTH) + PIX_PER_NODE_WIDTH / 2, fromY * PIX_PER_NODE_HEIGHT + PIX_PER_NODE_HEIGHT / 2, (toX * PIX_PER_NODE_WIDTH) + xAdd, (toY * PIX_PER_NODE_HEIGHT) + yAdd, black);
+		int startX = (fromX * PIX_PER_NODE_WIDTH) + PIX_PER_NODE_WIDTH / 2;
+		int startY = fromY * PIX_PER_NODE_HEIGHT + PIX_PER_NODE_HEIGHT / 2;
+		int endX = (toX * PIX_PER_NODE_WIDTH) + xAdd;
+		int endY = (toY * PIX_PER_NODE_HEIGHT) + yAdd;
+		c->draw_arrow(startX, startY,endX ,endY , black,1,30,20);
 
 	}
 
@@ -227,7 +222,32 @@ private:
 
 		drawRectByNode(n.getX(), n.getY(), c);
 		printTextOnSquare(n.getX(), n.getY(), getText(n.getData()), c);
+	}
+	
+	void drawEdges(Graph<ClassInfo> g,CImg<unsigned char>* c, std::vector<Node<ClassInfo>> nodeOverride) { // the nodeOverride should be deleted once the algorithm is functional
+		auto edges = g.getEdges();
+		for (Edge e : edges) {
+			//edges use an id value in node instead of pointers for some godawfull reason so I need to search the array for that shit
 
+
+			std::pair<int, int> startCords;
+			std::pair<int, int> endCords;
+			int startId = e.getStartNode();
+			int endId = e.getEndNode();
+			
+			//searches node list for a node of the correct id and takes node coords
+			for (Node<ClassInfo> n : nodeOverride) {
+				if (n.getID() == startId) {
+					startCords.first = n.getX();
+					startCords.second = n.getY();
+				}
+				if(n.getID() == endId) {
+					endCords.first = n.getX();
+					endCords.second = n.getY();
+				}
+			}
+			drawArrowFrom(startCords.first, startCords.second, endCords.first, endCords.second, c);
+		}
 	}
 };
 
