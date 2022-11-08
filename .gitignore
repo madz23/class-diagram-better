@@ -1,4 +1,7 @@
 # build files to be ignored
 Debug/
 bin/
+
 .vs*
+pythonTestFiles/__pycache__
+imgui.ini

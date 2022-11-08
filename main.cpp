@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include "GraphBuilder.hh"
 #include "ImGuiFileDialog-0.6.4/ImGuiFileDialog.h"
+#include "PrintOnPaper.h"
 
 // Data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -44,6 +45,11 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 // Main code
 int main(int, char**)
 {
+    //PrintOnPaper pop(4, 4);
+    //pop.display();
+    //PrintOnPaper::sudoMain();
+    //return 0;
+
     // Create application window
     //ImGui_ImplWin32_EnableDpiAwareness();
     WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, _T("ImGui Example"), NULL };
@@ -161,6 +167,17 @@ int main(int, char**)
         if (ImGui::Button("Browse Folders")) {
             ImGuiFileDialog::Instance()->OpenDialog("ChooseDirDlgKey", "Choose a Directory", nullptr, ".");
         }
+        ImGui::SameLine();
+        if (ImGui::Button("Print to image")) {
+            try {
+                graph = GraphBuilder::build(buf, recursive);
+                PrintOnPaper p(graph);
+            }
+            catch (std::filesystem::filesystem_error& e) {
+                std::cout << e.what() << std::endl;
+                std::cout << buf << std::endl;
+            }
+        }
         // display
         ImVec2 maxSize = ImVec2((float)viewport->Size.x, (float)viewport->Size.y);// The full display area
         ImVec2 minSize = ImVec2((float)viewport->Size.x/2, (float)viewport->Size.y/2);//maxSize * 0.5f;  // Half the display area
@@ -241,23 +258,20 @@ std::unordered_map<int, ImVec2> nodeToPosMap; // Maps a node ID to the location 
 
 // Initializes the positions for each node
 void initNodePositions(Graph<ClassInfo> graph) {
-    const ImGuiViewport* viewport = ImGui::GetMainViewport();
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
     nodeToPosMap.clear();
-    ImVec2 nodePos = viewport->Pos + ImVec2(20, 100);
+    graph.setPosition(viewport);
     for (Node<ClassInfo> node : graph.getNodes()) {
+        ImVec2 nodePos = ImVec2(node.getX(), node.getY());
         nodeToPosMap.insert({ node.getID(), nodePos });
-
-        nodePos.x += 280;
-        if (nodePos.x > viewport->Size.x - 100) {
-            nodePos.x = viewport->Pos.x + 20;
-            nodePos.y += 280;
-        }
     }
+    graph.getCross();
 }
 
 // Draws the class diagram
 void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
-    
+    //PrintOnPaper::nodeBs(graph);
+    //std::getchar();
     ImVec2 scroll = ImVec2(-ImGui::GetScrollX(), -ImGui::GetScrollY());
 
     // Nodes

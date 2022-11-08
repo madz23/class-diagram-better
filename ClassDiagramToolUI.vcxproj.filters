@@ -10,6 +10,9 @@
     <Filter Include="ImGuiFileDialog-0.6.4">
       <UniqueIdentifier>{2fe2897e-0b34-473d-a6f6-e70d4ed60830}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HeaderFiles">
+      <UniqueIdentifier>{83da6474-f2e1-47fd-b824-c8a07bb526a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -72,6 +75,13 @@
     <ClInclude Include="ImGuiFileDialog-0.6.4\dirent\dirent.h">
       <Filter>ImGuiFileDialog-0.6.4</Filter>
     </ClInclude>
+    <ClInclude Include="CImg.h">
+      <Filter>HeaderFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="testingCImg.hh">
+      <Filter>sources</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintOnPaper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="imgui\imgui.cpp">
@@ -131,6 +141,10 @@
     <ClCompile Include="ImGuiFileDialog-0.6.4\ImGuiFileDialog.cpp">
       <Filter>ImGuiFileDialog-0.6.4</Filter>
     </ClCompile>
+    <ClCompile Include="testingCImg.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintOnPaper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui\examples\README.txt" />

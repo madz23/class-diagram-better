@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CImg.h" />
     <ClInclude Include="ClassInfo.hh" />
     <ClInclude Include="ClassParser.hh" />
     <ClInclude Include="Edge.hh" />
@@ -154,6 +155,8 @@
     <ClInclude Include="FileManager.hh" />
     <ClInclude Include="Graph.hh" />
     <ClInclude Include="GraphBuilder.hh" />
+    <ClInclude Include="PrintOnPaper.h" />
+    <ClInclude Include="testingCImg.hh" />
     <ClInclude Include="ImGuiFileDialog-0.6.4\dirent\dirent.h" />
     <ClInclude Include="ImGuiFileDialog-0.6.4\ImGuiFileDialog.h" />
     <ClInclude Include="ImGuiFileDialog-0.6.4\ImGuiFileDialogConfig.h" />
@@ -187,6 +190,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Method.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="PrintOnPaper.cpp" />
+    <ClCompile Include="testingCImg.cpp" />
     <ClCompile Include="Type.cpp" />
   </ItemGroup>
   <ItemGroup>
