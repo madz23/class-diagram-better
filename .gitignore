@@ -2,3 +2,4 @@ Debug/
 .vs/
 bin/
 pythonTestFiles/__pycache__
+imgui.ini

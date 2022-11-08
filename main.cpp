@@ -167,6 +167,17 @@ int main(int, char**)
         if (ImGui::Button("Browse Folders")) {
             ImGuiFileDialog::Instance()->OpenDialog("ChooseDirDlgKey", "Choose a Directory", nullptr, ".");
         }
+        ImGui::SameLine();
+        if (ImGui::Button("Print to image")) {
+            try {
+                graph = GraphBuilder::build(buf, recursive);
+                PrintOnPaper p(graph);
+            }
+            catch (std::filesystem::filesystem_error& e) {
+                std::cout << e.what() << std::endl;
+                std::cout << buf << std::endl;
+            }
+        }
         // display
         ImVec2 maxSize = ImVec2((float)viewport->Size.x, (float)viewport->Size.y);// The full display area
         ImVec2 minSize = ImVec2((float)viewport->Size.x/2, (float)viewport->Size.y/2);//maxSize * 0.5f;  // Half the display area
