@@ -63,8 +63,8 @@ public:
     }
 
     //Function to set positions
-
-    void setPosition(ImGuiViewport* viewport) {
+    //For the basic layout
+    /*void setPosition(ImGuiViewport* viewport) {
         int x = viewport->Pos.x + 20;
         int y = viewport->Pos.y + 100;
         for (int i = 0; i < nodes.size(); i++) {
@@ -77,12 +77,77 @@ public:
                 y += 280;
             }
         }
+
+    }*/
+    void setPosition(ImGuiViewport* viewport) {
+        setNodeEdgeCounts();
+        std::vector< std::vector<int>> layers;
+        layers.push_back(getXInEdges(0));
+        std::cout << "---------------------------" << std::endl;
+        int increment = 0;
+        bool moreLayers = true;
+        while (moreLayers && increment < 100) {
+            std::vector<int> nextVector;
+            for (int i = 0; i < layers.at(increment).size(); i++) {
+                std::vector<int> tempVec = getNodesToIndexes(layers.at(increment).at(i));
+                for (int node : tempVec) {
+                    if (std::find(nextVector.begin(), nextVector.end(), node) == nextVector.end()) {
+                        nextVector.push_back(node);
+                    }
+                }
+            }
+            if (nextVector.size() > 0) {
+                layers.push_back(nextVector);
+                increment++;
+            }
+            else {
+                moreLayers = false;
+            }
+        }
+        /*std::vector<int> layer2;
+        for (int i = 0; i < layers.at(0).size(); i++) { 
+            std::vector<int> tempVec = getNodesToIndexes(layers.at(0).at(i));
+            for (int node : tempVec) {
+                if (std::find(layer2.begin(), layer2.end(), node) == layer2.end()) {
+                    layer2.push_back(node);
+                }
+            }
+        }
+        layers.push_back(layer2);*/
+        int x = viewport->Pos.x + 20;
+        int y = viewport->Pos.y + 300;
+        
+        for (int i = 0; i < nodes.size(); i++) {
+            nodes.at(i).setX(x);
+            nodes.at(i).setY(y);
+
+            x += 280;
+            if (x > viewport->Size.x - 100) {
+                x = viewport->Pos.x + 20;
+                y += 280;
+            }
+        }
+        y = viewport->Pos.y + 100;
+
+        for (std::vector<int> layer : layers) {
+            x = viewport->Pos.x + 200;
+            for (int i = 0; i < layer.size(); i++) {
+                nodes.at(layer.at(i)).setX(x);
+                nodes.at(layer.at(i)).setY(y);
+
+                x += 280;
+                if (x > viewport->Size.x - 100) {
+                    x = viewport->Pos.x + 20;
+                    y += 280;
+                }
+            }
+            y += 280;
+        }
     }
 
     //Temp logging functions - remove after graphing alg is complete
     void getCross() {
         int a = allCrossing();
-        std::cout << a << std::endl;
     }
 
 
@@ -92,6 +157,18 @@ private:
     std::vector<Edge<T>> edges;
 
     //Metods
+   
+    //returns a vector of nodes with no in edges
+    std::vector<int> getXInEdges(int x = 0){
+        std::vector<int> noInList;
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.at(i).getInEdges() == x) {
+                noInList.push_back(i);
+            }
+        }
+        return noInList;
+    }
+
     void setNodeEdgeCounts() {
         for (int i = 0; i < nodes.size(); i++) {
             int outCount = 0;
@@ -108,6 +185,24 @@ private:
             nodes.at(i).setInEdges(inCount);
         }
     }
+
+    std::vector<int> getNodesToIndexes(int nodeIndex) {
+        int ID = nodes.at(nodeIndex).getID();
+        std::vector<int> nodesTo;
+        for (int i = 0; i < edges.size(); i++) {
+            if (edges.at(i).getStartNode() == ID) {
+                for (int j = 0; j < nodes.size(); j++) {
+                    if (nodes.at(j).getID() == edges.at(i).getEndNode()) {
+                        nodesTo.push_back(j);
+                    }
+                }
+            }
+        }
+        return nodesTo;
+    }
+
+    //**********************************************
+    //The following functions are all involved in determining the number of crossing edges.
     bool isCrossing(Edge<T> edge1, Edge<T> edge2) {
         Node<T> p1, p2, p3, p4;
         for (Node<T> node : nodes) {
@@ -131,7 +226,7 @@ private:
         d3 = direction(p1, p2, p3);
         d4 = direction(p1, p2, p4);
         
-        std::cout << d1 <<" : "<< d2 <<" : "<< d3 <<" : "<< d4 << std::endl;
+        //std::cout << d1 <<" : "<< d2 <<" : "<< d3 <<" : "<< d4 << std::endl;
 
         if (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) {
             return true;
@@ -176,6 +271,8 @@ private:
         }
         return crossings;
     }
+    //This is the end of the crossing edge functions.
+    //**********************************************************
     
 
 };
