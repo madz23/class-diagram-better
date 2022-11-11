@@ -171,7 +171,7 @@ int main(int, char**)
         if (ImGui::Button("Print to image")) {
             try {
                 graph = GraphBuilder::build(buf, recursive);
-                PrintOnPaper p(graph);
+                PrintOnPaper p(graph,ImGui::GetScrollX(), ImGui::GetScrollY());
             }
             catch (std::filesystem::filesystem_error& e) {
                 std::cout << e.what() << std::endl;

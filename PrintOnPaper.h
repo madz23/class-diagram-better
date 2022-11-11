@@ -22,10 +22,13 @@ class PrintOnPaper
 	int pixHeight;
 	int pixWidth;
 	//CImg<unsigned char> bg;
+	//the positioning will be in pixles but I have to convert that so I'm dividing by these values to get simple grid indexing
+	int scrollX;
+	int scrollY;
 
 public:
 
-	PrintOnPaper(Graph<ClassInfo> graph) {
+	PrintOnPaper(Graph<ClassInfo> graph, float scrollX, float scrollY) {
 		const unsigned char bluegreen[] = { 0,170,255 };
 		const unsigned char grey[] = { 220,220,220 };
 		const unsigned char black[] = { 0,0,0 };
@@ -33,13 +36,16 @@ public:
 		const unsigned char red[] = { 255,0,0 };
 		const unsigned char green[] = { 0,255,0 };
 		const unsigned char blue[] = { 0,0,255 };
-
-		//calculate max and min x and y values:
+		this->scrollX = scrollX;
+		this->scrollY = scrollY;
 		
+		auto nodes = graph.getNodes();
+		//calculate max and min x and y values:
+		/**
 		int yy = 0;
 		int xx = 0;
 		 // delete this shit later
-		auto nodes = graph.getNodes();
+		
 		for (int i = 0; i < nodes.size(); i++) {
 			std::cout << std::endl << nodes.at(i).getX() << std::endl << nodes.at(i).getY();
 			nodes.at(i).setX(xx);
@@ -51,19 +57,19 @@ public:
 				yy += 1;
 			}
 		}
-
+		**/
 		
 		nodeHeight = 0;
 		nodeWidth = 0; // calculates the needed height and width of the pane
 		for (int i = 0; i < nodes.size(); i++) {
 			std::cout <<"b" << std::endl << nodes.at(i).getX() << std::endl << nodes.at(i).getY();
-			if (nodes.at(i).getX() > nodeWidth) {
-				nodeWidth = nodes.at(i).getX();
+			if (nodes.at(i).getX()/scrollX > nodeWidth) {
+				nodeWidth = std::round(nodes.at(i).getX() / scrollX);
 				std::cout << std::endl << nodeWidth;
 			}
 			std::cout << std::endl << std::endl;
-			if (nodes.at(i).getY() > nodeHeight) {
-				nodeHeight = nodes.at(i).getY();
+			if (nodes.at(i).getY()/scrollY > nodeHeight) {
+				nodeHeight = std::round(nodes.at(i).getY()/scrollY);
 				std::cout << std::endl << nodeHeight;
 			}
 		}
@@ -191,24 +197,24 @@ private:
 		return ret;
 	}
 
-	void printTextOnSquare(int x, int y, std::vector<std::string> textVect, CImg<unsigned char>* c) {
+	void printTextOnSquare(double x, double y, std::vector<std::string> textVect, CImg<unsigned char>* c) {
 		//convert vector of strings to array of const char * , not sure why it doesn't need to be a const char * const but it works and I no longer care
 
 		const int size = textVect.size();
 		const char** corrected = new const char* [size];
 
 		std::vector<std::string>::iterator iter;
-		for (int x = 0; x < size; x++) {
-			corrected[x] = textVect.at(x).c_str();
+		for (int i = 0; i < size; i++) {
+			corrected[i] = textVect.at(i).c_str();
 		}
 
 
 		const unsigned char grey[] = { 220,220,220 };
 		const unsigned char black[] = { 0,0,0 };
-		int startPixX = x * PIX_PER_NODE_WIDTH;
-		int startPixY = y * PIX_PER_NODE_HEIGHT;
-		int pixX = startPixX + SPACING;
-		int pixY = startPixY + SPACING;
+		double startPixX = x * PIX_PER_NODE_WIDTH;
+		double startPixY = y * PIX_PER_NODE_HEIGHT;
+		double pixX = startPixX + SPACING;
+		double pixY = startPixY + SPACING;
 		int textSpacing = 15;
 		for (int x = 0; x < size; x++) {
 			c->draw_text(pixX, pixY, corrected[x], black, grey, 1, 14);
@@ -220,14 +226,14 @@ private:
 	void drawNode(Node<ClassInfo> n, CImg<unsigned char>* c) {
 		//takes node, prints rectangle and writes the text over it
 
-		drawRectByNode(n.getX(), n.getY(), c);
-		printTextOnSquare(n.getX(), n.getY(), getText(n.getData()), c);
+		drawRectByNode(std::round(n.getX()/scrollX), std::round(n.getY()/scrollY), c);
+		printTextOnSquare(std::round(n.getX()/scrollX), std::round(n.getY()/scrollY), getText(n.getData()), c);
 	}
 	
 	void drawEdges(Graph<ClassInfo> g,CImg<unsigned char>* c, std::vector<Node<ClassInfo>> nodeOverride) { // the nodeOverride should be deleted once the algorithm is functional
 		auto edges = g.getEdges();
 		for (Edge e : edges) {
-			//edges use an id value in node instead of pointers for some godawfull reason so I need to search the array for that shit
+			//edges use an ID value in node instead of pointers for some godawfull reason so I need to search the array for the correct nodes
 
 
 			std::pair<int, int> startCords;
@@ -238,12 +244,12 @@ private:
 			//searches node list for a node of the correct id and takes node coords
 			for (Node<ClassInfo> n : nodeOverride) {
 				if (n.getID() == startId) {
-					startCords.first = n.getX();
-					startCords.second = n.getY();
+					startCords.first = std::round(n.getX() / scrollX);
+					startCords.second = std::round(n.getX() / scrollY);
 				}
 				if(n.getID() == endId) {
-					endCords.first = n.getX();
-					endCords.second = n.getY();
+					endCords.first = std::round(n.getX() / scrollX);
+					endCords.second = std::round(n.getX() / scrollY);
 				}
 			}
 			drawArrowFrom(startCords.first, startCords.second, endCords.first, endCords.second, c);
