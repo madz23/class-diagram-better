@@ -120,7 +120,7 @@ private:
 	}
 
 	// draw arrow from box at xy to other box at xy(full size cords not pixles)
-	void drawArrowFrom(int fromX, int fromY, int toX, int toY, CImg<unsigned char>* c) {
+	void drawArrowFrom(int fromX, int fromY, int toX, int toY, CImg<unsigned char>* c, bool stdArrow = true, std::string mult = "") {
 		const unsigned char black[] = { 0,0,0 };
 		int yDif = fromY - toY;
 		int xDif = toX - fromX;
@@ -128,6 +128,9 @@ private:
 		int xAdd;
 		bool minusX = false;
 		bool minusY = false;
+
+		
+
 		if (yDif < 0) {
 			yAdd = SPACING;
 		}
@@ -150,8 +153,27 @@ private:
 		int startY = fromY * PIX_PER_NODE_HEIGHT + PIX_PER_NODE_HEIGHT / 2;
 		int endX = (toX * PIX_PER_NODE_WIDTH) + xAdd;
 		int endY = (toY * PIX_PER_NODE_HEIGHT) + yAdd;
+
 		c->draw_arrow(startX, startY,endX ,endY , black,1,30,20);
 
+		std::pair<double, double> arrowLineOne();
+		std::pair<double, double> arrowLineTwo();
+		if (yDif < 0) {
+			
+		}
+		else if (yDif > 0) {
+			
+		}
+		else if (yDif == 0) {
+			
+		}
+		if (xDif < 0) {
+		}
+		else if (xDif > 0) {
+		}
+		else if (xDif == 0) {
+
+		}
 	}
 
 	int nodesToPixles() {
