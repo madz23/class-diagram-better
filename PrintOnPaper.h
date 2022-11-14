@@ -5,6 +5,9 @@
 #include "Node.hh"
 #include "Edge.hh"
 #include "ClassInfo.hh"
+
+#define PI 3.14159265
+
 using namespace cimg_library;
 class PrintOnPaper
 {
@@ -131,48 +134,51 @@ private:
 
 		
 
-		if (yDif < 0) {
+		if (yDif < 0) {// down
 			yAdd = SPACING;
 		}
-		else if (yDif > 0) {
+		else if (yDif > 0) { // up
 			yAdd = PIX_PER_NODE_HEIGHT - SPACING;
 		}
-		else if (yDif == 0) {
+		else if (yDif == 0) { // horizontal
 			yAdd = .5 * PIX_PER_NODE_HEIGHT;
 		}
-		if (xDif < 0) {
+		if (xDif < 0) { // left
 			xAdd = PIX_PER_NODE_WIDTH - SPACING;
 		}
-		else if (xDif > 0) {
+		else if (xDif > 0) { //right
 			xAdd = SPACING;
 		}
-		else if (xDif == 0) {
+		else if (xDif == 0) { // vertical
 			xAdd = .5 * PIX_PER_NODE_WIDTH;
 		}
 		int startX = (fromX * PIX_PER_NODE_WIDTH) + PIX_PER_NODE_WIDTH / 2;
 		int startY = fromY * PIX_PER_NODE_HEIGHT + PIX_PER_NODE_HEIGHT / 2;
 		int endX = (toX * PIX_PER_NODE_WIDTH) + xAdd;
 		int endY = (toY * PIX_PER_NODE_HEIGHT) + yAdd;
+		if (stdArrow) {
+			c->draw_arrow(startX, startY, endX, endY, black, 1, 30, 20); // standard black arrow, no multiplicity
+		}
+		else { // two lines arrow with multiplicity(no mult yet)
+			std::pair<double, double> arrowLineOne;
+			std::pair<double, double> arrowLineTwo;
+			int arrowHeadLen = 45;
+			//fuck it, no good way to do this like I did the above so I'm converting arrow slope to angle then using that to get the angles of the arrowhead lines
+			float degOfSlope = atan((float)(-yDif) / (float)xDif) * 180 / PI;//angle of slope in degrees
+			int angleOfArrowhead = 20; // angle of deviation from the line. half of total arrowhead angle
+			float angleOne = degOfSlope + 180 - angleOfArrowhead;
+			std::cout << degOfSlope << std::endl;
+			std::cout<<angleOne << std::endl;
+			float angleTwo = degOfSlope + 180 + angleOfArrowhead;
+			std::cout << angleTwo << std::endl;
 
-		c->draw_arrow(startX, startY,endX ,endY , black,1,30,20);
-
-		std::pair<double, double> arrowLineOne();
-		std::pair<double, double> arrowLineTwo();
-		if (yDif < 0) {
-			
-		}
-		else if (yDif > 0) {
-			
-		}
-		else if (yDif == 0) {
-			
-		}
-		if (xDif < 0) {
-		}
-		else if (xDif > 0) {
-		}
-		else if (xDif == 0) {
-
+			arrowLineOne.first = endX + arrowHeadLen * cos(angleOne* PI/180);
+			arrowLineOne.second = endY + arrowHeadLen * sin(angleOne * PI / 180);
+			arrowLineTwo.first = endX + arrowHeadLen * cos(angleTwo * PI / 180);
+			arrowLineTwo.second = endY + arrowHeadLen * sin(angleTwo * PI / 180);
+			c->draw_line(startX,startY,endX,endY, black); // primary line
+			c->draw_line(endX, endY, arrowLineOne.first, arrowLineOne.second, black); // arrowhead lines
+			c->draw_line(endX, endY, arrowLineTwo.first, arrowLineTwo.second, black);
 		}
 	}
 
@@ -277,7 +283,18 @@ private:
 
 				}
 			}
-			drawArrowFrom(startCords.first, startCords.second, endCords.first, endCords.second, c);
+			if (e.getType() == Edge<ClassInfo>::Type::INHERITANCE) {
+				drawArrowFrom(startCords.first, startCords.second, endCords.first, endCords.second, c);
+			}
+			else {
+				if (e.getMultiplicity() == Edge<ClassInfo>::Multiplicity::ONE_TO_ONE) {
+					drawArrowFrom(startCords.first, startCords.second, endCords.first, endCords.second, c, false, "1");
+				}
+				else if (e.getMultiplicity() == Edge<ClassInfo>::Multiplicity::ONE_TO_MANY) {
+					drawArrowFrom(startCords.first, startCords.second, endCords.first, endCords.second, c, false, "n");
+				}
+			}
+			//drawArrowFrom(startCords.first, startCords.second, endCords.first, endCords.second, c);
 		}
 	}
 };
