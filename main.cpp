@@ -172,9 +172,9 @@ int main(int, char**)
             try {
                 ImGuiViewport* viewport = ImGui::GetMainViewport();
                 graph = GraphBuilder::build(buf, recursive);
+
                 graph.setPosition(viewport);
                 PrintOnPaper p(graph,280,280);
-                
             }
             catch (std::filesystem::filesystem_error& e) {
                 std::cout << e.what() << std::endl;
