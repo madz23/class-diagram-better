@@ -171,8 +171,11 @@ int main(int, char**)
         ImGui::SameLine();
         if (ImGui::Button("Print to image")) {
             try {
+                ImGuiViewport* viewport = ImGui::GetMainViewport();
                 graph = GraphBuilder::build(buf, recursive);
-                PrintOnPaper p(graph);
+
+                graph.setPosition(viewport);
+                PrintOnPaper p(graph,280,280);
             }
             catch (std::filesystem::filesystem_error& e) {
                 std::cout << e.what() << std::endl;

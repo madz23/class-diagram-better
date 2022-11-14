@@ -21,8 +21,8 @@ public:
     Node(int ID, T data) {
         this->ID = ID;
         this->data = data;
-        this->x = 100;
-        this->y = 100;
+        this->x = 0;
+        this->y = 0;
         this->inEdges = 0;
         this->outEdges = 0;
     }
