@@ -62,10 +62,10 @@ public:
 		nodeHeight = 0;
 		nodeWidth = 0; // calculates the needed height and width of the pane
 		for (int i = 0; i < nodes.size(); i++) {
-			std::cout <<"b" << std::endl << nodes.at(i).getX() << std::endl << nodes.at(i).getY();
+			std::cout <<"b" << std::endl << std::round(nodes.at(i).getX() / scrollX) << std::endl << std::round(nodes.at(i).getY() / scrollY);
 			if (nodes.at(i).getX()/scrollX > nodeWidth) {
 				nodeWidth = std::round(nodes.at(i).getX() / scrollX);
-				std::cout << std::endl << nodeWidth;
+
 			}
 			std::cout << std::endl << std::endl;
 			if (nodes.at(i).getY()/scrollY > nodeHeight) {
@@ -78,7 +78,7 @@ public:
 		pixHeight = nodeHeight * PIX_PER_NODE_HEIGHT;
 		pixWidth = nodeWidth * PIX_PER_NODE_WIDTH;
 		CImg<unsigned char> bg(pixWidth, pixHeight, 2, 3, 255); // I have no idea what the 2 and 3 are but the 255 means a white background
-		drawEdges(graph, &bg, nodes);
+		drawEdges(graph, &bg);
 		//actual loop to draw all nodes
 		for (int i = 0; i < nodes.size(); i++) {
 			drawNode(nodes.at(i), &bg);
@@ -230,7 +230,7 @@ private:
 		printTextOnSquare(std::round(n.getX()/scrollX), std::round(n.getY()/scrollY), getText(n.getData()), c);
 	}
 	
-	void drawEdges(Graph<ClassInfo> g,CImg<unsigned char>* c, std::vector<Node<ClassInfo>> nodeOverride) { // the nodeOverride should be deleted once the algorithm is functional
+	void drawEdges(Graph<ClassInfo> g,CImg<unsigned char>* c) { // the nodeOverride should be deleted once the algorithm is functional
 		auto edges = g.getEdges();
 		for (Edge e : edges) {
 			//edges use an ID value in node instead of pointers for some godawfull reason so I need to search the array for the correct nodes
@@ -242,14 +242,14 @@ private:
 			int endId = e.getEndNode();
 			
 			//searches node list for a node of the correct id and takes node coords
-			for (Node<ClassInfo> n : nodeOverride) {
+			for (Node<ClassInfo> n : g.getNodes()) {
 				if (n.getID() == startId) {
 					startCords.first = std::round(n.getX() / scrollX);
-					startCords.second = std::round(n.getX() / scrollY);
+					startCords.second = std::round(n.getY() / scrollY);
 				}
 				if(n.getID() == endId) {
 					endCords.first = std::round(n.getX() / scrollX);
-					endCords.second = std::round(n.getX() / scrollY);
+					endCords.second = std::round(n.getY() / scrollY);
 				}
 			}
 			drawArrowFrom(startCords.first, startCords.second, endCords.first, endCords.second, c);
