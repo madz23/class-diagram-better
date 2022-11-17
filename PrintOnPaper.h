@@ -5,6 +5,7 @@
 #include "Node.hh"
 #include "Edge.hh"
 #include "ClassInfo.hh"
+#include <math.h>
 
 #define PI 3.14159265
 
@@ -164,7 +165,7 @@ private:
 			std::pair<double, double> arrowLineTwo;
 			int arrowHeadLen = 45;
 			//fuck it, no good way to do this like I did the above so I'm converting arrow slope to angle then using that to get the angles of the arrowhead lines
-			float degOfSlope = atan((float)(-yDif) / (float)xDif) * 180 / PI;//angle of slope in degrees
+			float degOfSlope = atan2((float)((endY - startY)), (float)(endX - startX)) * 180 / PI;//angle of slope in degrees
 			int angleOfArrowhead = 20; // angle of deviation from the line. half of total arrowhead angle
 			float angleOne = degOfSlope + 180 - angleOfArrowhead;
 			std::cout << degOfSlope << std::endl;
