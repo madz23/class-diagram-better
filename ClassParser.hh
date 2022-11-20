@@ -28,6 +28,7 @@ private:
     static std::regex scopeRegex;
     static std::regex typeRegex;
     static std::regex commentRegex;
+    static std::regex multiLineCommentRegex;
     static std::regex inheritanceRegex;
 
     static std::set<std::string> collectionTypes;
@@ -40,46 +41,52 @@ public:
     /// <param name="classContents">The string to parse for classes</param>
     /// <returns>A vector of ClassInfo objects filled with the methods and fields found in the string for that class</returns>
     static std::vector<ClassInfo> parseClasses(std::string classContents) {
-        std::vector<ClassInfo> classInfos;
-        std::smatch classMatch;
-        unsigned int startPosition = 0;
-        unsigned int endPosition = 0;
+        try {
+            std::vector<ClassInfo> classInfos;
+            std::smatch classMatch;
+            unsigned int startPosition = 0;
+            unsigned int endPosition = 0;
 
-        classContents = removeComments(classContents);
+            classContents = removeComments(classContents);
 
-        // Find all the classes in the given piece of text
-        while (std::regex_search(classContents, classMatch, classRegex)) {
-            // Get the contents of the class that was matched and get the strings for it
-            std::tie(startPosition, endPosition) = findMatchingMarks(classContents.substr(classMatch.position()));
-            std::string classSection = classContents.substr(classMatch.position() + startPosition, endPosition - startPosition + 1);
+            // Find all the classes in the given piece of text
+            while (std::regex_search(classContents, classMatch, classRegex)) {
+                // Get the contents of the class that was matched and get the strings for it
+                std::tie(startPosition, endPosition) = findMatchingMarks(classContents.substr(classMatch.position()));
+                std::string classSection = classContents.substr(classMatch.position() + startPosition, endPosition - startPosition + 1);
 
-            // Create the class that was found
-            ClassInfo classInfo(classMatch[1]);
-            
-            // Get the inheritances from the class match
-            parseInheritance(classMatch[2], classInfo);
+                // Create the class that was found
+                ClassInfo classInfo(classMatch[1]);
 
-            // Breaks the class sections into public, private, and protected sections and passes
-            // them into the parse methods and fields methods
-            std::vector<std::tuple<std::string, std::string>> scopeSections = findScopeSections(classSection);
+                // Get the inheritances from the class match
+                parseInheritance(classMatch[2], classInfo);
 
-            for (const auto &scopeSection: scopeSections) {
-                // Break out the scope and the text associated
-                std::string scope;
-                std::string scopeContents;
-                std::tie(scope, scopeContents) = scopeSection;
+                // Breaks the class sections into public, private, and protected sections and passes
+                // them into the parse methods and fields methods
+                std::vector<std::tuple<std::string, std::string>> scopeSections = findScopeSections(classSection);
 
-                // Gather the methods in the scope section of the class and add them to the class object
-                std::string nonMethodScopeContents = parseMethods(scopeContents, classInfo, scope);
-                parseFields(nonMethodScopeContents, classInfo, scope);
+                for (const auto& scopeSection : scopeSections) {
+                    // Break out the scope and the text associated
+                    std::string scope;
+                    std::string scopeContents;
+                    std::tie(scope, scopeContents) = scopeSection;
+
+                    // Gather the methods in the scope section of the class and add them to the class object
+                    std::string nonMethodScopeContents = parseMethods(scopeContents, classInfo, scope);
+                    parseFields(nonMethodScopeContents, classInfo, scope);
+                }
+
+                // Add the class to the vector of classes
+                classInfos.push_back(classInfo);
+
+                classContents = classMatch.suffix().str();
             }
-
-            // Add the class to the vector of classes
-            classInfos.push_back(classInfo);
-
-            classContents = classMatch.suffix().str();
+            return classInfos;
         }
-        return classInfos;
+        catch (...) {
+            std::cout << "Failed parsing Methods";
+        }
+
     }
 
 private:
@@ -92,15 +99,32 @@ private:
     /// <param name="contents">The text to remove comments from</param>
     /// <returns>The input string with any comments removed</returns>
     static std::string removeComments(std::string contents) {
-        std::smatch commentMatch;
-        std::string nonCommentContents = "";
+        try {
+            std::smatch commentMatch;
+            std::string commentsReducedToSingleAsterisk = "";
+            std::string nonCommentContents = "";
 
-        while (std::regex_search(contents, commentMatch, commentRegex)) {
-            nonCommentContents.append(contents.substr(0, commentMatch.position()));
-            contents = commentMatch.suffix().str();
+            while (std::regex_search(contents, commentMatch, multiLineCommentRegex)) {
+               commentsReducedToSingleAsterisk.append(contents.substr(0, commentMatch.position()));
+               commentsReducedToSingleAsterisk.append("/*");
+               contents = commentMatch.suffix().str();
+            }
+            commentsReducedToSingleAsterisk.append(contents);
+
+
+
+            while (std::regex_search(commentsReducedToSingleAsterisk, commentMatch, commentRegex)) {
+                nonCommentContents.append(commentsReducedToSingleAsterisk.substr(0, commentMatch.position()));
+                commentsReducedToSingleAsterisk = commentMatch.suffix().str();
+            }
+            nonCommentContents.append(commentsReducedToSingleAsterisk);
+            return nonCommentContents;
         }
-        nonCommentContents.append(contents);
-        return nonCommentContents;
+        
+        catch (...) {
+            std::cout << "Failed Removing Comments";
+        }
+
     }
 
     /// <summary>
@@ -111,31 +135,37 @@ private:
     /// <param name="scope">The scope of the methods</param>
     /// <returns>The string contents not associated with the methods that are matched in the sectionContents. Everything not a method header or the body of a method.</returns>
     static std::string parseMethods(std::string sectionContents, ClassInfo &classInfo, const std::string &scope) {
-        std::smatch methodMatch;
-        std::string nonMethodContents = "";
-
-        
-        while (std::regex_search(sectionContents, methodMatch, methodRegex)) {
-            nonMethodContents.append(sectionContents.substr(0, methodMatch.position()));
-            classInfo.addMethod(Method(methodMatch[2], parseType(methodMatch[1]), scope, methodMatch[3]));
-            sectionContents = methodMatch.suffix().str();
+        try {
+            std::smatch methodMatch;
+            std::string nonMethodContents = "";
 
 
-            // If the method has a body (opening and closing curly braces)...
-            int i = 0;
-            while (sectionContents[i] == ' ' || sectionContents[i] == '\n') {
-                i++;
+            while (std::regex_search(sectionContents, methodMatch, methodRegex)) {
+                nonMethodContents.append(sectionContents.substr(0, methodMatch.position()));
+                classInfo.addMethod(Method(methodMatch[2], parseType(methodMatch[1]), scope, methodMatch[3]));
+                sectionContents = methodMatch.suffix().str();
+
+
+                // If the method has a body (opening and closing curly braces)...
+                int i = 0;
+                while (sectionContents[i] == ' ' || sectionContents[i] == '\n') {
+                    i++;
+                }
+
+                // find the body section and remove it from the search string
+                if (sectionContents[i] == '{') {
+                    int closingMarkIndex;
+                    std::tie(std::ignore, closingMarkIndex) = findMatchingMarks(sectionContents);
+                    sectionContents = sectionContents.substr(closingMarkIndex, sectionContents.length() - closingMarkIndex + 1);
+                }
             }
-
-            // find the body section and remove it from the search string
-            if (sectionContents[i] == '{') {
-                int closingMarkIndex;
-                std::tie(std::ignore, closingMarkIndex) = findMatchingMarks(sectionContents);
-                sectionContents = sectionContents.substr(closingMarkIndex, sectionContents.length() - closingMarkIndex + 1);
-            }
+            nonMethodContents.append(sectionContents);
+            return nonMethodContents;
         }
-        nonMethodContents.append(sectionContents);
-        return nonMethodContents;
+        catch (...) {
+            std::cout << "Failed parsing Methods";
+        }
+
     }
 
     /// <summary>
@@ -147,6 +177,12 @@ private:
     static void parseFields(std::string sectionContents, ClassInfo &classInfo, const std::string &scope) {
         // TODO: Actually figure out how to do this. (remove methods from string?)
         //std::cout << sectionContents << std::endl << std::endl;
+        try {
+
+        }
+        catch (...) {
+            std::cout << "Failed parsing Fields";
+        }
         std::smatch fieldMatch;
         while (std::regex_search(sectionContents, fieldMatch, fieldRegex)) {
             classInfo.addField(Field(fieldMatch[2], parseType(fieldMatch[1]), scope));
@@ -160,29 +196,42 @@ private:
     /// <param name="typeContents">The text to parse for type data</param>
     /// <returns>a Type object containing the data parsed from the input text</returns>
     static Type parseType(std::string typeContents) {
-        std::smatch typeMatch;
-        std::regex_search(typeContents, typeMatch, typeRegex);
-        // Matches:
-        // 0 -> The whole match
-        // 1 -> The namespace if there is one
-        // 2 -> The actual object type (may be a collection)
-        // 3 -> The contents of the <> if there is one
-        // 4 -> The actual type of the contents of the <>
-        Type type;
-        if (collectionTypes.count(typeMatch[2])) {
-            type = Type(typeMatch[4], typeMatch[1], typeMatch[2]);
-        } else {
-            type = Type(typeMatch[2], typeMatch[1]);
+        try {
+            std::smatch typeMatch;
+            std::regex_search(typeContents, typeMatch, typeRegex);
+            // Matches:
+            // 0 -> The whole match
+            // 1 -> The namespace if there is one
+            // 2 -> The actual object type (may be a collection)
+            // 3 -> The contents of the <> if there is one
+            // 4 -> The actual type of the contents of the <>
+            Type type;
+            if (collectionTypes.count(typeMatch[2])) {
+                type = Type(typeMatch[4], typeMatch[1], typeMatch[2]);
+            }
+            else {
+                type = Type(typeMatch[2], typeMatch[1]);
+            }
+            return type;
         }
-        return type;
+        catch (...) {
+            std::cout << "Failed parsing Types";
+        }
+
     }
     
     static void parseInheritance(std::string sectionContents, ClassInfo &classInfo) {
-        std::smatch inheritanceMatch;
-        while (std::regex_search(sectionContents, inheritanceMatch, inheritanceRegex)) {
-            classInfo.addBase(inheritanceMatch[1]);
-            sectionContents = inheritanceMatch.suffix().str();
+        try {
+            std::smatch inheritanceMatch;
+            while (std::regex_search(sectionContents, inheritanceMatch, inheritanceRegex)) {
+                classInfo.addBase(inheritanceMatch[1]);
+                sectionContents = inheritanceMatch.suffix().str();
+            }
         }
+        catch (...) {
+            std::cout << "Failed parsing Inheritance";
+        }
+
     }
 
     /// <summary>
@@ -194,34 +243,40 @@ private:
     /// <param name="closeMark">The character to use as the closing mark to find (e.g. ')', '}', ']', '>')</param>
     /// <returns>a tuple containing the indices for the corresponding opening and closing marks respectively</returns>
     static std::tuple<int, int> findMatchingMarks(const std::string &text, int markOffset = 0, char openMark = '{', char closeMark = '}') {
-        // Start at -1 so that the first increment of openPosition starts with the 0th character
-        int openPosition = -1;
-        int closePosition = 0;
+        try {
+            // Start at -1 so that the first increment of openPosition starts with the 0th character
+            int openPosition = -1;
+            int closePosition = 0;
 
-        // This allows us to skip a number of matching braces equal to the markOffset
-        int count = -markOffset;
+            // This allows us to skip a number of matching braces equal to the markOffset
+            int count = -markOffset;
 
-        // Get the textLength ahead of time to reduce length calls
-        long long textLength = text.length();
+            // Get the textLength ahead of time to reduce length calls
+            long long textLength = text.length();
 
-        // Find the position of the desired opening mark
-        while (count < 1 && openPosition < textLength) {
-            openPosition++;
-            if (text[openPosition] == openMark) count++;
+            // Find the position of the desired opening mark
+            while (count < 1 && openPosition < textLength) {
+                openPosition++;
+                if (text[openPosition] == openMark) count++;
+            }
+
+            // Now that we have the open mark position, start from there and find the closing mark position
+            closePosition = openPosition;
+            while (count > 0 && closePosition < textLength) {
+                closePosition++;
+                if (text[closePosition] == closeMark) count--;
+                else if (text[closePosition] == openMark) count++;
+            }
+
+            // If either the closing mark or opening mark are not found withing the bounds of the text, set the position to
+            // -1 to symbolize non-existence
+            if (closePosition >= textLength) return std::make_tuple(-1, -1);
+            return std::make_tuple(openPosition, closePosition);
+        }
+        catch (...) {
+            std::cout << "Failed parsing Matching Marks (),{},[]";
         }
 
-        // Now that we have the open mark position, start from there and find the closing mark position
-        closePosition = openPosition;
-        while (count > 0 && closePosition < textLength) {
-            closePosition++;
-            if (text[closePosition] == closeMark) count--;
-            else if (text[closePosition] == openMark) count++;
-        }
-
-        // If either the closing mark or opening mark are not found withing the bounds of the text, set the position to
-        // -1 to symbolize non-existence
-        if (closePosition >= textLength) return std::make_tuple(-1, -1);
-        return std::make_tuple(openPosition, closePosition);
     }
 
     /// <summary>
@@ -230,41 +285,47 @@ private:
     /// <param name="text">The string to break up into scope sections</param>
     /// <returns>a vector of tuples where the first index of the tuple is the scope and the second is the code section</returns>
     static std::vector<std::tuple<std::string, std::string>> findScopeSections(const std::string &text) {
-        std::vector<std::tuple<std::string, std::string>> scopeSections;
-        std::smatch scopeMatch;
-        std::string textCopy = text;
+        try {
+            std::vector<std::tuple<std::string, std::string>> scopeSections;
+            std::smatch scopeMatch;
+            std::string textCopy = text;
 
-        // Initial variables for grabbing the first section of anything not in a specifier
-        unsigned long long previousIndex = 0;
-        unsigned long long indexOffset = 0;
+            // Initial variables for grabbing the first section of anything not in a specifier
+            unsigned long long previousIndex = 0;
+            unsigned long long indexOffset = 0;
 
-        // No specifier defaults to private
-        std::string scope = "private";
+            // No specifier defaults to private
+            std::string scope = "private";
 
-        // Regex for 'public:', 'private:', and 'protected:' and add the previous section to the scopeSections
-        while (std::regex_search(textCopy, scopeMatch, scopeRegex)) {
-            // Calculate the current index relative to the original text file
-            unsigned long long currentIndex = scopeMatch.position() + indexOffset;
+            // Regex for 'public:', 'private:', and 'protected:' and add the previous section to the scopeSections
+            while (std::regex_search(textCopy, scopeMatch, scopeRegex)) {
+                // Calculate the current index relative to the original text file
+                unsigned long long currentIndex = scopeMatch.position() + indexOffset;
 
-            // Add the substring that occurs from the start index of the previous match to 1 minus the index of the
-            // current match
-            scopeSections.emplace_back(scope, text.substr(previousIndex, currentIndex - previousIndex));
+                // Add the substring that occurs from the start index of the previous match to 1 minus the index of the
+                // current match
+                scopeSections.emplace_back(scope, text.substr(previousIndex, currentIndex - previousIndex));
 
-            // The scope matched in this loop iteration is the scope that will be added in the next loop iteration
-            scope = scopeMatch[1];
+                // The scope matched in this loop iteration is the scope that will be added in the next loop iteration
+                scope = scopeMatch[1];
 
-            // Calculate the previous index relative to the original text file
-            previousIndex = currentIndex;
+                // Calculate the previous index relative to the original text file
+                previousIndex = currentIndex;
 
-            // Update the search string so the regex doesn't match the same thing over and over again
-            textCopy = scopeMatch.suffix().str();
+                // Update the search string so the regex doesn't match the same thing over and over again
+                textCopy = scopeMatch.suffix().str();
 
-            // Have to calculate an indexOffset since each subsequent regex search trims the string; thus match
-            // positions are no longer relative to the original string
-            indexOffset = text.length() - textCopy.length() - 1;
+                // Have to calculate an indexOffset since each subsequent regex search trims the string; thus match
+                // positions are no longer relative to the original string
+                indexOffset = text.length() - textCopy.length() - 1;
+            }
+            scopeSections.emplace_back(scope, text.substr(previousIndex, text.length() - previousIndex));
+
+            return scopeSections;
         }
-        scopeSections.emplace_back(scope, text.substr(previousIndex, text.length() - previousIndex));
+        catch(...) {
+            std::cout << "Failed to find Scope Sections";
+        }
 
-        return scopeSections;
     }
 };
