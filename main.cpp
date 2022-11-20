@@ -28,7 +28,7 @@ static ID3D11RenderTargetView*  g_mainRenderTargetView = NULL;
 // Forward declarations of graph drawing fucntions
 void initNodePositions(Graph<ClassInfo> graph);
 void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList);
-void drawNode(ClassInfo classInfo, ImVec2 pos, ImDrawList* drawList);
+void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList);
 void displayClassInfo(ClassInfo classInfo, ImVec2 pos);
 
 // Inline operators for ImVec2
@@ -41,6 +41,7 @@ void CleanupDeviceD3D();
 void CreateRenderTarget();
 void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 
 // Main code
 int main(int, char**)
@@ -170,8 +171,11 @@ int main(int, char**)
         ImGui::SameLine();
         if (ImGui::Button("Print to image")) {
             try {
+                ImGuiViewport* viewport = ImGui::GetMainViewport();
                 graph = GraphBuilder::build(buf, recursive);
-                PrintOnPaper p(graph);
+
+                graph.setPosition(viewport);
+                PrintOnPaper p(graph,280,280);
             }
             catch (std::filesystem::filesystem_error& e) {
                 std::cout << e.what() << std::endl;
@@ -260,7 +264,7 @@ std::unordered_map<int, ImVec2> nodeToPosMap; // Maps a node ID to the location 
 void initNodePositions(Graph<ClassInfo> graph) {
     ImGuiViewport* viewport = ImGui::GetMainViewport();
     nodeToPosMap.clear();
-    graph.setPosition(viewport);
+    graph.setPosition(viewport);  
     for (Node<ClassInfo> node : graph.getNodes()) {
         ImVec2 nodePos = ImVec2(node.getX(), node.getY());
         nodeToPosMap.insert({ node.getID(), nodePos });
@@ -279,7 +283,7 @@ void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
         auto search = nodeToPosMap.find(node.getID());
         if (search != nodeToPosMap.end()){
             ImVec2 nodePos = search->second;
-            drawNode(node.getData(), nodePos + scroll, drawList);
+            drawNode(node, nodePos + scroll, drawList);
         }
     }
 
@@ -361,16 +365,42 @@ void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
     }
 }
 
+
+bool isInNode(ImVec2 mousePos, ImVec2 nodePos) {
+    bool inNode = false;
+    if (mousePos.x < nodePos.x + nodeWidth && mousePos.x > nodePos.x && mousePos.y < nodePos.y + nodeHeight && mousePos.y > nodePos.y)
+        inNode = true;
+
+    return inNode;
+}
+
+// Helper methods for drag and drop
+int getNodeAtPos(ImVec2 pos, Graph<ClassInfo> graph) {
+    int ndx = -1;
+    for (Node<ClassInfo> node : graph.getNodes()) {
+        if (isInNode(pos, nodeToPosMap.find(node.getID())->second))
+            ndx = node.getID();
+    }
+    return ndx;
+}
 // Draws a node
-void drawNode(ClassInfo classInfo, ImVec2 pos, ImDrawList* drawList) {
+void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList) {
     // Node contents
+    ClassInfo classInfo = node.getData();
     drawList->ChannelsSetCurrent(1);
     ImGui::SetCursorScreenPos(pos + ImVec2(7.5f, 8.0f));
     ImGui::BeginGroup();
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.10f, 0.10f, 0.10f, 0.0f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.20f, 0.20f, 0.20f, 0.5f));
     if (ImGui::Button(&classInfo.getName()[0], ImVec2(nodeWidth - 15, nodeHeight - 16)))
+    {
         ImGui::OpenPopup(&classInfo.getName()[0]);
+        std::cout << ImGui::GetMousePos().x << "\t" << ImGui::GetMousePos().y << "\n";
+        std::cout << pos.x << "\t" << pos.y << "\n";
+        std::cout << node.getX() << "\t" << node.getY() << "\n";
+        std::cout << isInNode(ImGui::GetMousePos(), pos) << "\n";
+        
+    }
     ImGui::PopStyleColor(2);
     displayClassInfo(classInfo, pos);
     ImGui::EndGroup();
@@ -504,3 +534,4 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     }
     return ::DefWindowProc(hWnd, msg, wParam, lParam);
 }
+
