@@ -5,3 +5,4 @@ bin/
 .vs*
 pythonTestFiles/__pycache__
 imgui.ini
+secondaryTest.bmp
