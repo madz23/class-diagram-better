@@ -12,12 +12,12 @@
 using namespace cimg_library;
 class PrintOnPaper
 {
-	//const int PIX_PER_NODE_HEIGHT = 300;
-	//const int PIX_PER_NODE_WIDTH = 200;
-	//const int SPACING = 50;
-	const int PIX_PER_NODE_HEIGHT = 1000;
-	const int PIX_PER_NODE_WIDTH = 700;
-	const int SPACING = 200;
+	const int PIX_PER_NODE_HEIGHT = 175;
+	const int PIX_PER_NODE_WIDTH = 275;
+	const int SPACING = 50;
+	//const int PIX_PER_NODE_HEIGHT = 1000;
+	//const int PIX_PER_NODE_WIDTH = 700;
+	//const int SPACING = 200;
 
 	//height and width in nodes
 	int nodeHeight;
@@ -164,7 +164,7 @@ private:
 		else { // two lines arrow with multiplicity
 			std::pair<double, double> arrowLineOne; // coordinates of the ends of the arrow lines
 			std::pair<double, double> arrowLineTwo;
-			int arrowHeadLen = 45;
+			int arrowHeadLen = 20;
 			//fuck it, no good way to do this like I did the above so I'm converting line slope to degrees then
 			//using that to get the angles of the arrowhead lines.
 			float degOfSlope = atan2((float)((endY - startY)), (float)(endX - startX)) * 180 / PI;//angle of slope in degrees
@@ -200,6 +200,9 @@ private:
 		// Name
 		ret.push_back(classInfo.getName());
 
+		//commented out section just adds full info as displayed in the click open box in the main gui. removed to simplify the image. if replaced, sizing will need to be adjusted to match
+
+		/**
 		// Fields
 		ret.push_back("Fields:");
 		for (Field field : classInfo.getFields()) {
@@ -230,6 +233,7 @@ private:
 			}
 			ret.push_back(methodText);
 		}
+		*/
 		return ret;
 	}
 
