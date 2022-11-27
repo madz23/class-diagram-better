@@ -196,10 +196,16 @@ private:
 
 
 	std::vector <std::string> getText(ClassInfo classInfo) {
+		int maxLen = 20;
 		std::vector<std::string> ret;
 		// Name
-		ret.push_back(classInfo.getName());
-
+		//wrap text if it's over 25 characters
+		std::string temp = classInfo.getName();
+		while (temp.length() > maxLen) {
+			ret.push_back(temp.substr(0, maxLen));
+			temp = temp.substr(maxLen, temp.length());
+		}
+		ret.push_back(temp);
 		//commented out section just adds full info as displayed in the click open box in the main gui. removed to simplify the image. if replaced, sizing will need to be adjusted to match
 
 		/**
