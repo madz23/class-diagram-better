@@ -247,8 +247,8 @@ int main(int, char**)
 }
 
 // Draw graph fields/methods
-const float nodeWidth = 110;
-const float nodeHeight = 80;
+const float nodeWidth = 100;
+const float nodeHeight = 30;
 const float pi = 3.142f;
 const float quad1 = atan(nodeHeight/nodeWidth);
 const float quad4 = -quad1;
@@ -277,6 +277,50 @@ void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
     //PrintOnPaper::nodeBs(graph);
     //std::getchar();
     ImVec2 scroll = ImVec2(-ImGui::GetScrollX(), -ImGui::GetScrollY());
+
+    //int move_from = -1, move_to = -1;
+
+    //for (int n = 0; n < graph.getNodes().size(); n++) {
+    //    ImGui::Selectable(&graph.getNodes()[n].getData().getName()[0]);
+
+    //    ImGuiDragDropFlags src_flags = 0;
+    //    src_flags | -ImGuiDragDropFlags_SourceNoDisableHover;
+    //    src_flags |= ImGuiDragDropFlags_SourceNoHoldToOpenOthers;
+    //    if (ImGui::BeginDragDropSource(src_flags)) {
+    //        if (!(src_flags & ImGuiDragDropFlags_SourceNoPreviewTooltip)) {
+    //            ImGui::Text("Moving \"%s\"", graph.getNodes()[n].getData().getName()[0]);
+    //        }
+    //        ImGui::SetDragDropPayload("DropNode", &n, sizeof(int));
+    //        ImGui::EndDragDropSource();
+    //    }
+    //    if (ImGui::BeginDragDropTarget()) {
+    //        ImGuiDragDropFlags target_flags = 0;
+    //        target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
+    //        target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+    //        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_NAME", target_flags))
+    //        {
+    //            move_from = *(const int*)payload->Data;
+    //            move_to = n;
+    //        }
+    //        ImGui::EndDragDropTarget();
+    //    }
+    //    
+    //}
+
+    //if (move_from != -1 && move_to != -1)
+    //{
+    //    int copy_dst = (move_from < move_to) ? move_from : move_to + 1;
+    //    int copy_src = (move_from < move_to) ? move_from + 1 : move_to;
+    //    int copy_count = (move_from < move_to) ? move_to - move_from : move_from - move_to;
+    //    Node<ClassInfo> tmp = graph.getNodes()[move_from];
+    //    memmove(&graph.getNodes()[copy_dst].getData().getName()[0], &graph.getNodes()[copy_src].getData().getName()[0], (size_t)copy_count * sizeof(const char*));
+    //    // names[move_to] = tmp;
+    //    graph.setNode(tmp, move_to);
+    //    ImGui::SetDragDropPayload("DND_DEMO_NAME", &move_to, sizeof(int)); 
+    //}
+
+    
+    
 
     // Nodes
     for (Node<ClassInfo> node : graph.getNodes()) {
@@ -317,10 +361,21 @@ void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
             
             // Set color based on edge multiplicity
             unsigned int color = baseColor;
+
+            float lineWidth = edgeWidth;
+
+            switch (edge.getType()) {
+                case Edge<ClassInfo>::Type::INHERITANCE:
+                    lineWidth = 5.0f;
+                    break;
+                case Edge<ClassInfo>::Type::ASSOCIATION:
+                    lineWidth = 0.5f;
+                    break;
+            }
             
 
             // Draw line for edge
-            drawList->AddLine(startPos + scroll, endPos + scroll, color, edgeWidth); 
+            drawList->AddLine(startPos + scroll, endPos + scroll, color, lineWidth); 
 
             ImVec2 mPoint1;
             ImVec2 mPoint2;
@@ -383,6 +438,7 @@ int getNodeAtPos(ImVec2 pos, Graph<ClassInfo> graph) {
     }
     return ndx;
 }
+
 // Draws a node
 void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList) {
     // Node contents
@@ -392,13 +448,14 @@ void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList) {
     ImGui::BeginGroup();
     ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.10f, 0.10f, 0.10f, 0.0f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.20f, 0.20f, 0.20f, 0.5f));
+  
     if (ImGui::Button(&classInfo.getName()[0], ImVec2(nodeWidth - 15, nodeHeight - 16)))
     {
         ImGui::OpenPopup(&classInfo.getName()[0]);
-        std::cout << ImGui::GetMousePos().x << "\t" << ImGui::GetMousePos().y << "\n";
-        std::cout << pos.x << "\t" << pos.y << "\n";
-        std::cout << node.getX() << "\t" << node.getY() << "\n";
-        std::cout << isInNode(ImGui::GetMousePos(), pos) << "\n";
+        //std::cout << ImGui::GetMousePos().x << "\t" << ImGui::GetMousePos().y << "\n";
+        //std::cout << pos.x << "\t" << pos.y << "\n";
+        //std::cout << node.getX() << "\t" << node.getY() << "\n";
+        //std::cout << isInNode(ImGui::GetMousePos(), pos) << "\n";
         
     }
     ImGui::PopStyleColor(2);
@@ -409,6 +466,10 @@ void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList) {
     drawList->ChannelsSetCurrent(0);
     drawList->AddRectFilled(pos, pos + ImVec2(nodeWidth, nodeHeight), IM_COL32(10, 10, 10, 255));
     drawList->AddRect(pos, pos + ImVec2(nodeWidth, nodeHeight), IM_COL32(50, 50, 50, 255));
+
+    if (ImGui::IsItemActive() && ImGui::IsMouseDragging(0)) {
+        std::cout << node.getData().getName()[0];
+    }
 }
 
 // Displays a popup showing the fields and methods of a class

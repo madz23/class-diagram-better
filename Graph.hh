@@ -32,6 +32,9 @@ public:
     void removeNode(Node<T> node) {
         remove(nodes.begin(), nodes.end(), node);
     }
+    void setNode(Node<T> node, int ndx) {
+        nodes[ndx] = node;
+    }
 
     // Add and remove edges
     void addEdge(Edge<T> edge) {
