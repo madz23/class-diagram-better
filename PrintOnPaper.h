@@ -5,6 +5,7 @@
 #include "Node.hh"
 #include "Edge.hh"
 #include "ClassInfo.hh"
+#include <math.h>
 
 #define PI 3.14159265
 
@@ -125,6 +126,7 @@ private:
 	// draw arrow from box at xy to other box at xy(full size cords not pixles)
 	void drawArrowFrom(int fromX, int fromY, int toX, int toY, CImg<unsigned char>* c, bool stdArrow = true, std::string mult = "") {
 		const unsigned char black[] = { 0,0,0 };
+		const unsigned char white[] = { 255,255,255 };
 		int yDif = fromY - toY;
 		int xDif = toX - fromX;
 		int yAdd;
@@ -133,7 +135,7 @@ private:
 		bool minusY = false;
 
 		
-
+		//determine whawt side of the end node it is pointing at using the slope, adjust spacing to point at the appropriate side/corner
 		if (yDif < 0) {// down
 			yAdd = SPACING;
 		}
@@ -152,25 +154,23 @@ private:
 		else if (xDif == 0) { // vertical
 			xAdd = .5 * PIX_PER_NODE_WIDTH;
 		}
-		int startX = (fromX * PIX_PER_NODE_WIDTH) + PIX_PER_NODE_WIDTH / 2;
+		int startX = (fromX * PIX_PER_NODE_WIDTH) + PIX_PER_NODE_WIDTH / 2;//convert node positions to pixles
 		int startY = fromY * PIX_PER_NODE_HEIGHT + PIX_PER_NODE_HEIGHT / 2;
 		int endX = (toX * PIX_PER_NODE_WIDTH) + xAdd;
 		int endY = (toY * PIX_PER_NODE_HEIGHT) + yAdd;
 		if (stdArrow) {
 			c->draw_arrow(startX, startY, endX, endY, black, 1, 30, 20); // standard black arrow, no multiplicity
 		}
-		else { // two lines arrow with multiplicity(no mult yet)
-			std::pair<double, double> arrowLineOne;
+		else { // two lines arrow with multiplicity
+			std::pair<double, double> arrowLineOne; // coordinates of the ends of the arrow lines
 			std::pair<double, double> arrowLineTwo;
 			int arrowHeadLen = 45;
-			//fuck it, no good way to do this like I did the above so I'm converting arrow slope to angle then using that to get the angles of the arrowhead lines
-			float degOfSlope = atan((float)(-yDif) / (float)xDif) * 180 / PI;//angle of slope in degrees
+			//fuck it, no good way to do this like I did the above so I'm converting line slope to degrees then
+			//using that to get the angles of the arrowhead lines.
+			float degOfSlope = atan2((float)((endY - startY)), (float)(endX - startX)) * 180 / PI;//angle of slope in degrees
 			int angleOfArrowhead = 20; // angle of deviation from the line. half of total arrowhead angle
 			float angleOne = degOfSlope + 180 - angleOfArrowhead;
-			std::cout << degOfSlope << std::endl;
-			std::cout<<angleOne << std::endl;
 			float angleTwo = degOfSlope + 180 + angleOfArrowhead;
-			std::cout << angleTwo << std::endl;
 
 			arrowLineOne.first = endX + arrowHeadLen * cos(angleOne* PI/180);
 			arrowLineOne.second = endY + arrowHeadLen * sin(angleOne * PI / 180);
@@ -179,6 +179,13 @@ private:
 			c->draw_line(startX,startY,endX,endY, black); // primary line
 			c->draw_line(endX, endY, arrowLineOne.first, arrowLineOne.second, black); // arrowhead lines
 			c->draw_line(endX, endY, arrowLineTwo.first, arrowLineTwo.second, black);
+
+			// multiplicity
+			// use the arrowhead line equations with double length to get positioning for the character
+			std::pair<double, double> multPosition;
+			multPosition.first = endX + (arrowHeadLen* 2) *cos(angleOne * PI / 180);
+			multPosition.second = endY + (arrowHeadLen * 2) *sin(angleOne * PI / 180);
+			c->draw_text(multPosition.first, multPosition.second, mult.c_str(), 1, white, 1, 15);
 		}
 	}
 
