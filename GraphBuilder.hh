@@ -29,8 +29,9 @@ public:
     /// <param name="srcDirectory">The path to the c++ project's source directory</param>
     /// <param name="recursive">Whether or not to recursively search subdirectories</param>
     /// <returns>the graph data structure contain nodes with class information</returns>
-    static Graph<ClassInfo> build(std::string srcDirectory, bool recursive) {
+    static Graph<ClassInfo> build(std::string srcDirectory, bool recursive, int distance = 120) {
         Graph<ClassInfo> graph;
+        graph.setDistance(distance);
         std::vector<std::string> paths = FileManager::getFilePaths(srcDirectory, recursive);
         std::unordered_map<std::string, ClassInfo> classMap;
 

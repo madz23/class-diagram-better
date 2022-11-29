@@ -13,11 +13,18 @@
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx11.h"
 #include <d3d11.h>
+#include <string>
+#include <iostream>
 #include <tchar.h>
 #include <unordered_map>
 #include "GraphBuilder.hh"
 #include "ImGuiFileDialog-0.6.4/ImGuiFileDialog.h"
 #include "PrintOnPaper.h"
+
+using namespace std;
+
+// Node Distance variable
+static int selectedItem;
 
 // Data
 static ID3D11Device*            g_pd3dDevice = NULL;
@@ -146,29 +153,35 @@ int main(int, char**)
 
         // Directory input window
         ImGui::SetNextWindowPos(viewport->Pos);
-        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 75));
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 150));
         ImGui::Begin("directory input", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
         ImGui::Text("C++ Source Directory:");
         static char buf[256] = "";
-        ImGui::InputText(" ", buf, 256);
-        ImGui::SameLine();
+        ImGui::InputText(" ", buf, 256);        
+
+        static const char* items[]{ "100", "125","150", "175", "200", "225", "250"};
+        static int selectedItem = 1;
+
+        ImGui::Combo("Node Distance", &selectedItem, items, IM_ARRAYSIZE(items));
+
         if (ImGui::Button("Generate")) {
             //std::strcpy(buf, "test");
             try {
-                graph = GraphBuilder::build(buf, recursive);
+                graph = GraphBuilder::build(buf, recursive, stoi(items[selectedItem]));
                 initNodePositions(graph);
             }
-            catch (std::filesystem::filesystem_error &e) {
+            catch (std::filesystem::filesystem_error& e) {
                 std::cout << e.what() << std::endl;
                 std::cout << buf << std::endl;
             }
         }
+        
         ImGui::Checkbox("Search Subfolders", &recursive);   
         ImGui::SameLine();
         if (ImGui::Button("Browse Folders")) {
             ImGuiFileDialog::Instance()->OpenDialog("ChooseDirDlgKey", "Choose a Directory", nullptr, ".");
         }
-        ImGui::SameLine();
+
         if (ImGui::Button("Print to image")) {
             try {
                 ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -182,6 +195,7 @@ int main(int, char**)
                 std::cout << buf << std::endl;
             }
         }
+
         // display
         ImVec2 maxSize = ImVec2((float)viewport->Size.x, (float)viewport->Size.y);// The full display area
         ImVec2 minSize = ImVec2((float)viewport->Size.x/2, (float)viewport->Size.y/2);//maxSize * 0.5f;  // Half the display area
@@ -277,49 +291,6 @@ void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
     //PrintOnPaper::nodeBs(graph);
     //std::getchar();
     ImVec2 scroll = ImVec2(-ImGui::GetScrollX(), -ImGui::GetScrollY());
-
-    //int move_from = -1, move_to = -1;
-
-    //for (int n = 0; n < graph.getNodes().size(); n++) {
-    //    ImGui::Selectable(&graph.getNodes()[n].getData().getName()[0]);
-
-    //    ImGuiDragDropFlags src_flags = 0;
-    //    src_flags | -ImGuiDragDropFlags_SourceNoDisableHover;
-    //    src_flags |= ImGuiDragDropFlags_SourceNoHoldToOpenOthers;
-    //    if (ImGui::BeginDragDropSource(src_flags)) {
-    //        if (!(src_flags & ImGuiDragDropFlags_SourceNoPreviewTooltip)) {
-    //            ImGui::Text("Moving \"%s\"", graph.getNodes()[n].getData().getName()[0]);
-    //        }
-    //        ImGui::SetDragDropPayload("DropNode", &n, sizeof(int));
-    //        ImGui::EndDragDropSource();
-    //    }
-    //    if (ImGui::BeginDragDropTarget()) {
-    //        ImGuiDragDropFlags target_flags = 0;
-    //        target_flags |= ImGuiDragDropFlags_AcceptBeforeDelivery;
-    //        target_flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
-    //        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("DND_DEMO_NAME", target_flags))
-    //        {
-    //            move_from = *(const int*)payload->Data;
-    //            move_to = n;
-    //        }
-    //        ImGui::EndDragDropTarget();
-    //    }
-    //    
-    //}
-
-    //if (move_from != -1 && move_to != -1)
-    //{
-    //    int copy_dst = (move_from < move_to) ? move_from : move_to + 1;
-    //    int copy_src = (move_from < move_to) ? move_from + 1 : move_to;
-    //    int copy_count = (move_from < move_to) ? move_to - move_from : move_from - move_to;
-    //    Node<ClassInfo> tmp = graph.getNodes()[move_from];
-    //    memmove(&graph.getNodes()[copy_dst].getData().getName()[0], &graph.getNodes()[copy_src].getData().getName()[0], (size_t)copy_count * sizeof(const char*));
-    //    // names[move_to] = tmp;
-    //    graph.setNode(tmp, move_to);
-    //    ImGui::SetDragDropPayload("DND_DEMO_NAME", &move_to, sizeof(int)); 
-    //}
-
-    
     
 
     // Nodes
@@ -366,7 +337,7 @@ void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList) {
 
             switch (edge.getType()) {
                 case Edge<ClassInfo>::Type::INHERITANCE:
-                    lineWidth = 5.0f;
+                    lineWidth = 3.0f;
                     break;
                 case Edge<ClassInfo>::Type::ASSOCIATION:
                     lineWidth = 0.5f;
@@ -439,6 +410,16 @@ int getNodeAtPos(ImVec2 pos, Graph<ClassInfo> graph) {
     return ndx;
 }
 
+void resetNodePostition(Node<ClassInfo> node, ImVec2 pos) {
+    auto search = nodeToPosMap.find(node.getID());
+    ImVec2 nodePos = search->second;
+    // set node values for the bmp file 
+    node.setX(pos.x);
+    node.setY(pos.y);
+    // set map value for this GUI
+    nodeToPosMap[node.getID()] = pos;
+}
+
 // Draws a node
 void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList) {
     // Node contents
@@ -468,7 +449,7 @@ void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList) {
     drawList->AddRect(pos, pos + ImVec2(nodeWidth, nodeHeight), IM_COL32(50, 50, 50, 255));
 
     if (ImGui::IsItemActive() && ImGui::IsMouseDragging(0)) {
-        std::cout << node.getData().getName()[0];
+        resetNodePostition(node, ImGui::GetMousePos());
     }
 }
 

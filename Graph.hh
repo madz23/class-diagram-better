@@ -21,6 +21,9 @@ template<class T>
 class Graph {
 public:
     // Add and remove nodes
+    void setDistance(int distance) {
+        nodeDistance = distance;
+    }
     void addNode(Node<T> node) {
         nodes.push_back(node);
     }
@@ -126,8 +129,8 @@ public:
             }
         }
         layers.push_back(layer2);*/
-        int x = viewport->Pos.x + 20;
-        int y = viewport->Pos.y + 300;
+        int x = viewport->Pos.x + 10;
+        int y = viewport->Pos.y + 50;
         
        /* for (int i = 0; i < nodes.size(); i++) {
             nodes.at(i).setX(x);
@@ -151,12 +154,12 @@ public:
         }*/
         //*************************************
 
-        y = viewport->Pos.y + 100;
+        y = viewport->Pos.y + 150;
         for (std::vector<int> layer : layers) {
             x = viewport->Pos.x + 20;
             int mid = (biggestLayerSize / 2) - (layer.size() / 2);
             for (int i = 0; i < mid; i++) {
-                x += 280;
+                x += nodeDistance;
             }
             for (int i = 0; i < layer.size(); i++) {
                 if (nodes.at(layer.at(i)).getX() == 0) { // Checks to make sure node position isn't overwritten
@@ -164,13 +167,13 @@ public:
                     nodes.at(layer.at(i)).setY(y);
                 }
 
-                x += 280;
+                x += nodeDistance;
                 /*if (x > viewport->Size.x - 100) {
                     x = viewport->Pos.x + 20;
                     y += 280;
                 }*/
             }
-            y += 280;
+            y += nodeDistance;
         }
 
         //for (int i = 0; i < nodes.size(); i++) {
@@ -216,6 +219,7 @@ private:
     // Fields
     std::vector<Node<T>> nodes;
     std::vector<Edge<T>> edges;
+    int nodeDistance;
 
     //Metods
    

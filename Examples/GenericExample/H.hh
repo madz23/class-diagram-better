@@ -1,11 +1,11 @@
 #pragma once
 
-#include "B.hh"
+#include "E.hh"
 
 class H {
 private:
 
-    B b;
+    E e;
 
 public:
     H();
