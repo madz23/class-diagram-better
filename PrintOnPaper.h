@@ -289,15 +289,22 @@ private:
 			
 			//searches node list for a node of the correct id and takes node coords
 			for (Node<ClassInfo> n : g.getNodes()) {
+				bool ready = false; // bool exists to see if either end has already been found so when the second has, it knows to break out of the loop.
 				if (n.getID() == startId) {
 					startCords.first = std::round(n.getX() / scrollX);
-
 					startCords.second = std::round(n.getY() / scrollY);
+					if (ready) {
+						break;
+					}
+					else ready = true;
 				}
 				if(n.getID() == endId) {
 					endCords.first = std::round(n.getX() / scrollX);
 					endCords.second = std::round(n.getY() / scrollY);
-
+					if (ready) {
+						break;
+					}
+					else ready = true;
 				}
 			}
 			if (e.getType() == Edge<ClassInfo>::Type::INHERITANCE) {
