@@ -65,6 +65,7 @@ private:
     /// <param name="directoryIterator">The directory editor to use for searching for header files (either directory_iterator or recursive_directory_iterator)</param>
     /// <returns>A vector of filepaths to header files found in the directoryIterator</returns>
     static std::vector<std::string> getHeaderFiles(auto directoryIterator) {
+        // change to use an unordered_map potentially, then modify everywhere else that uses it.
         std::vector<std::string> filePaths;
 
         // Loop through the contents of the directory
@@ -72,7 +73,8 @@ private:
             std::string path = entry.path().string();
 
             // If the entry isn't a directory and is a header file, add it to the list to return
-            if (!entry.is_directory() && regex_match(path, std::regex(R"(.*\.(?:h|hh|hxx)$)"))) {
+            // change this to accept both hh and cpp files.
+            if (!entry.is_directory() && regex_match(path, std::regex(R"(.*\.(?:h|hh|hxx|cpp)$)"))) {
                 filePaths.push_back(path);
             }
         }
