@@ -37,6 +37,9 @@ void initNodePositions(Graph<ClassInfo> graph);
 void drawGraph(Graph<ClassInfo> graph, ImDrawList* drawList);
 void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList);
 void displayClassInfo(ClassInfo classInfo, ImVec2 pos);
+//forward declaration of function to print to image
+
+void printPicture(auto graph);
 
 // Inline operators for ImVec2
 static inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y); }
@@ -183,7 +186,11 @@ int main(int, char**)
         }
 
         if (ImGui::Button("Print to image")) {
-            try {
+            //PrintOnPaper p(graph,nodeToPosMap ,280, 280);
+
+            printPicture(graph);
+
+            /**            try {
                 ImGuiViewport* viewport = ImGui::GetMainViewport();
                 graph = GraphBuilder::build(buf, recursive);
 
@@ -194,6 +201,7 @@ int main(int, char**)
                 std::cout << e.what() << std::endl;
                 std::cout << buf << std::endl;
             }
+            **/
         }
 
         // display
@@ -273,6 +281,11 @@ const int arrowSize = 20;
 unsigned int baseColor = IM_COL32(127, 127, 127, 127);
 unsigned int redColor = IM_COL32(127, 0, 0, 127);
 std::unordered_map<int, ImVec2> nodeToPosMap; // Maps a node ID to the location of the window for that class info
+
+// has to be here becuase it needs the nodeToPosMap
+void printPicture(auto graph) {
+    PrintOnPaper p(graph, nodeToPosMap, 280, 280);
+}
 
 // Initializes the positions for each node
 void initNodePositions(Graph<ClassInfo> graph) {
