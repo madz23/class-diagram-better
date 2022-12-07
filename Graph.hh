@@ -11,6 +11,7 @@
 #include <vector>
 #include <iostream>
 #include "imgui.h"
+#include <chrono>
 
 /// <summary>
 /// Generic Graph data structure.
@@ -186,10 +187,18 @@ public:
         //for (int i = 0; i < nodes.size(); i++) {
         //    printf("Node %s has %d crossings\n", nodes.at(i).getData().getName().c_str(), crossingsFrom(i));
         //}
+        auto start = std::chrono::high_resolution_clock::now();
+
         for (std::vector<int> layer : layers) {
             for (int i = 0; i < layer.size(); i++) {
                 int crossings = crossingsFrom(layer.at(i));
-                if ( crossings > 0) {
+                auto now = std::chrono::high_resolution_clock::now();
+                auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - start);
+                if (elapsed.count() >= 60) {
+                    // Stop the loop
+                    break;
+                }
+                else if ( crossings > 0) {
                     for (int j = 0; j < layer.size(); j++) {
                         swapNodes(layer.at(i), layer.at(j));
                         if (crossingsFrom(layer.at(i)) <= crossings) {
