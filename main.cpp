@@ -39,7 +39,7 @@ void drawNode(Node<ClassInfo> node, ImVec2 pos, ImDrawList* drawList);
 void displayClassInfo(ClassInfo classInfo, ImVec2 pos);
 //forward declaration of function to print to image
 
-void printPicture(auto graph);
+void printPicture(auto graph, std::string path);
 
 // Inline operators for ImVec2
 static inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y); }
@@ -190,8 +190,8 @@ int main(int, char**)
 
         if (ImGui::Button("Print to image")) {
             //PrintOnPaper p(graph,nodeToPosMap ,280, 280);
-
-            printPicture(graph);
+            ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose a File", ".bmp",".", "");
+            //printPicture(graph); // moved to below in the file dialog box code
 
             /**            try {
                 ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -207,9 +207,10 @@ int main(int, char**)
             **/
         }
 
-        // display
+        // display size vars
         ImVec2 maxSize = ImVec2((float)viewport->Size.x, (float)viewport->Size.y);// The full display area
         ImVec2 minSize = ImVec2((float)viewport->Size.x/2, (float)viewport->Size.y/2);//maxSize * 0.5f;  // Half the display area
+        //for the directory chooser, copies string to the buffer associated with the path input box
         if (ImGuiFileDialog::Instance()->Display("ChooseDirDlgKey", ImGuiWindowFlags_NoCollapse, minSize, maxSize)){
         // action if OK
             if (ImGuiFileDialog::Instance()->IsOk()){
@@ -222,6 +223,26 @@ int main(int, char**)
                 // close
                 ImGuiFileDialog::Instance()->Close();
             }
+
+        // for the image save system, formats a path to a bmp with double slashes so the program can actually handle it.
+        if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey", ImGuiWindowFlags_NoCollapse, minSize, maxSize)) {
+            // action if OK
+            if (ImGuiFileDialog::Instance()->IsOk()) {
+                std::string correctedPath = ImGuiFileDialog::Instance()->GetFilePathName();
+                int lastSwapped = 0;
+                while (correctedPath.find("\\",lastSwapped) != string::npos) {
+                    int posNext = correctedPath.find("\\", lastSwapped);
+                        correctedPath.replace(posNext, 1, "\\\\");
+                        lastSwapped = posNext += 2;
+                    std::cout << correctedPath;
+                }
+                std::cout << correctedPath;
+                printPicture(graph,correctedPath);
+            }
+
+            // close
+            ImGuiFileDialog::Instance()->Close();
+        }
         
         ImGui::End();
 
@@ -286,8 +307,8 @@ unsigned int redColor = IM_COL32(127, 0, 0, 127);
 std::unordered_map<int, ImVec2> nodeToPosMap; // Maps a node ID to the location of the window for that class info
 
 // has to be here becuase it needs the nodeToPosMap
-void printPicture(auto graph) {
-    PrintOnPaper p(graph, nodeToPosMap, 280, 280);
+void printPicture(auto graph, std::string path) {
+    PrintOnPaper p(graph, nodeToPosMap, path);
 }
 
 // Initializes the positions for each node

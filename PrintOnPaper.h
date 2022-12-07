@@ -30,12 +30,11 @@ class PrintOnPaper
 	int pixWidth;
 	//CImg<unsigned char> bg;
 	//the positioning will be in pixles but I have to convert that so I'm dividing by these values to get simple grid indexing
-	int scrollX;
-	int scrollY;
+
 
 public:
 
-	PrintOnPaper(Graph<ClassInfo> graph, std::unordered_map<int, ImVec2> nodeToPosMap, float scrollX, float scrollY) {
+	PrintOnPaper(Graph<ClassInfo> graph, std::unordered_map<int, ImVec2> nodeToPosMap,std::string path) {
 		const unsigned char bluegreen[] = { 0,170,255 };
 		const unsigned char grey[] = { 220,220,220 };
 		const unsigned char black[] = { 0,0,0 };
@@ -43,8 +42,7 @@ public:
 		const unsigned char red[] = { 255,0,0 };
 		const unsigned char green[] = { 0,255,0 };
 		const unsigned char blue[] = { 0,0,255 };
-		this->scrollX = scrollX;
-		this->scrollY = scrollY;
+
 		
 		auto nodes = graph.getNodes();
 		//calculate max and min x and y values:
@@ -112,13 +110,14 @@ public:
 		//drawArrowFrom(0, 0, 1, 1, &bg);
 		
 
-		///* exists as test functionality, dispays pane of image and doesn't save and close until char is entered. Very poor resolution, better to view image manually.
+		/* exists as test functionality, dispays pane of image and doesn't save and close until char is entered. Very poor resolution, better to view image manually.
 		CImgDisplay dsp(pixWidth, pixHeight, "uwu", 0);
 		dsp.display(bg);
 		std::getchar();
-		//*/
-		// C:\\Users\\Lybec\\Documents\\
-		bg.save_bmp("test.bmp");
+		*/
+		// C:\\Users\\Lybec\\Documents
+		//
+		bg.save_bmp(path.c_str());
 	}
 
 
@@ -268,7 +267,6 @@ private:
 
 	void printTextOnSquare(double x, double y, std::vector<std::string> textVect, CImg<unsigned char>* c) {
 		//convert vector of strings to array of const char * , not sure why it doesn't need to be a const char * const as the type declaration says but it works and I no longer care
-		std::cout << x << std::endl << y << std::endl;
 		const int size = textVect.size();
 		const char** corrected = new const char* [size];
 
@@ -285,7 +283,6 @@ private:
 			c->draw_text(x,y, corrected[i], black, grey, 1, 20);
 			y += textSpacing;
 		}
-		std::cout << x << std::endl << y << std::endl<<std::endl;
 		delete[] corrected;
 	}
 
