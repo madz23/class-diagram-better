@@ -12,7 +12,8 @@ std::regex ClassParser::methodRegex = std::regex(R"((?:static\s+)?((?:\w+::)*\w+
 std::regex ClassParser::fieldRegex = std::regex(R"((?:static\s+)?((?:\w+::)*\w+(?:<.*>)? *&*\**) +(\w+) *(?:const)*;)");
 std::regex ClassParser::scopeRegex = std::regex(R"((private|public|protected):)");
 std::regex ClassParser::typeRegex = std::regex(R"(((?:\w+::)*)(\w+)(?:<((?:\w+::)*(\w+).*)>)?)");
-std::regex ClassParser::commentRegex = std::regex(R"((?:\/\/.*\n|\/\*(?:.|\n)*\*\/))");
+std::regex ClassParser::commentRegex = std::regex(R"((?:(\/\/.*\n)|(\/\*+\*+(?:[^\/\*][^\*]*\*+)*\/)))");
+std::regex ClassParser::multiLineCommentRegex = std::regex(R"((?:\/\*\*+))");
 std::regex ClassParser::inheritanceRegex = std::regex(R"((?:private|public|protected)\s*(\w+))");
 
 std::set<std::string> ClassParser::collectionTypes = {

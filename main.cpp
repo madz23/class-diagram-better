@@ -156,7 +156,7 @@ int main(int, char**)
 
         // Directory input window
         ImGui::SetNextWindowPos(viewport->Pos);
-        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 150));
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, 125));
         ImGui::Begin("directory input", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
         ImGui::Text("C++ Source Directory:");
         static char buf[256] = "";
@@ -165,6 +165,9 @@ int main(int, char**)
         static const char* items[]{ "100", "125","150", "175", "200", "225", "250"};
         static int selectedItem = 1;
 
+        ImGui::SameLine();
+        ImGui::Text("Node Distance:");
+        ImGui::SameLine();
         ImGui::Combo("Node Distance", &selectedItem, items, IM_ARRAYSIZE(items));
 
         if (ImGui::Button("Generate")) {
@@ -423,9 +426,14 @@ int getNodeAtPos(ImVec2 pos, Graph<ClassInfo> graph) {
     return ndx;
 }
 
-void resetNodePostition(Node<ClassInfo> node, ImVec2 pos) {
+void resetNodePostition(Node<ClassInfo> node, ImVec2 position) {
     auto search = nodeToPosMap.find(node.getID());
     ImVec2 nodePos = search->second;
+
+    ImVec2 pos = position;
+    if (pos.x <= 0) { pos.x = 0; }
+    if (pos.y <= 125) { pos.y = 125; }
+
     // set node values for the bmp file 
     node.setX(pos.x);
     node.setY(pos.y);
