@@ -1,5 +1,5 @@
 ///
-/// \Authors Hunter, Patience
+/// \Authors Hunter, Patience, Austin Lyman
 /// \file ClassParser.hh
 /// \note A class parser that uses static methods to take in a string, parse the string for classes, methods, and fields
 ///       and return what is parsed as a vector of ClassInfo objects filled with Method and Field objects.
@@ -104,6 +104,7 @@ private:
             std::string commentsReducedToSingleAsterisk = "";
             std::string nonCommentContents = "";
 
+            // used to remove multi-line comments with multiple asterisks, which cause a stack overflow if they exist.
             while (std::regex_search(contents, commentMatch, multiLineCommentRegex)) {
                commentsReducedToSingleAsterisk.append(contents.substr(0, commentMatch.position()));
                commentsReducedToSingleAsterisk.append("/*");

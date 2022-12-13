@@ -1,5 +1,5 @@
 ///
-/// \Authors Hunter, Patience
+/// \Authors Hunter, Patience, Austin Lyman
 /// \file ClassParser.cpp
 /// \note The implementation file for the class parser class. Only initializes the static regex fields for the header file.
 ///
