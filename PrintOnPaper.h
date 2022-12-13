@@ -23,7 +23,9 @@ class PrintOnPaper
 
 
 public:
-
+	/*
+	* Runner method, takes graph, map, and path, constructs image, saves to the path
+	*/
 	PrintOnPaper(Graph<ClassInfo> graph, std::unordered_map<int, ImVec2> nodeToPosMap,std::string path) {
 		
 		auto nodes = graph.getNodes();
