@@ -13,23 +13,13 @@
 using namespace cimg_library;
 class PrintOnPaper
 {
-	const int PIX_PER_NODE_HEIGHT = 175;
-	const int PIX_PER_NODE_WIDTH = 275;
-	const int SPACING = 50;
 	const int RECT_WIDTH = 100;
 	const int RECT_HEIGHT = 40;
-	//const int PIX_PER_NODE_HEIGHT = 1000;
-	//const int PIX_PER_NODE_WIDTH = 700;
-	//const int SPACING = 200;
 
-	//height and width in nodes
-	int nodeHeight;
-	int nodeWidth;
+
 	//overall size of the screen in pixles
 	int pixHeight;
 	int pixWidth;
-	//CImg<unsigned char> bg;
-	//the positioning will be in pixles but I have to convert that so I'm dividing by these values to get simple grid indexing
 
 
 public:
@@ -45,61 +35,35 @@ public:
 
 		
 		auto nodes = graph.getNodes();
-		//calculate max and min x and y values:
-		/**
-		int yy = 0;
-		int xx = 0;
-		 // delete this shit later
-		
-		for (int i = 0; i < nodes.size(); i++) {
-			std::cout << std::endl << nodes.at(i).getX() << std::endl << nodes.at(i).getY();
-			nodes.at(i).setX(xx);
-			nodes.at(i).setY(yy);
-			std::cout << std::endl << nodes.at(i).getX() << std::endl << nodes.at(i).getY()<<"y";
-			xx += 1;
-			if (xx >= 5) {
-				xx = 0;
-				yy += 1;
-			}
-		}
-		**/
 
-		//multiplies the pixle values to better fit the sizing of the image
+		//multiplies the pixle values to better fit the sizing of the image, left commented out in case it's needed by future workers
 		int mult = 1;
+		/*
 		for (int i = 0; i < nodes.size(); i++) {
 			nodeToPosMap[nodes.at(i).getID()].x *= mult;
 			nodeToPosMap[nodes.at(i).getID()].y *= mult;
 		}
 
+		*/
 
 
-
-		nodeHeight = 0;
-		nodeWidth = 0; // calculates the needed height and width of the pane
+		// calculates the needed height and width of the pane
 		pixHeight = 0;
 		pixWidth = 0;
 		for (int i = 0; i < nodes.size(); i++) {
 
-			//std::cout <<"b" << std::endl << nodes.at(i).getX() << std::endl << nodes.at(i).getY();
 			if (nodeToPosMap[nodes.at(i).getID()].x  > pixWidth) {
 				pixWidth = nodeToPosMap[nodes.at(i).getID()].x;
-				//std::cout << std::endl << nodeWidth;
 			}
-			//std::cout << std::endl << std::endl;
 			if (nodeToPosMap[nodes.at(i).getID()].y > pixHeight) {
 				pixHeight = nodeToPosMap[nodes.at(i).getID()].y;
-				//std::cout << std::endl << nodeHeight;
 			}
 		}
-		pixHeight = pixHeight + (PIX_PER_NODE_HEIGHT * mult);// adds enough to the outside edge to get everything in frame(otherwise would stop at the edge of the farthest square)
-		pixWidth = pixWidth + (PIX_PER_NODE_WIDTH * mult);
-		/**
-		nodeHeight += 1;
-		nodeWidth += 1;
-		pixHeight = nodeHeight * PIX_PER_NODE_HEIGHT;
-		pixWidth = nodeWidth * PIX_PER_NODE_WIDTH;
-		**/
+		// adds enough to the outside edge to get everything in frame(otherwise would stop at the edge of the farthest square)
+		pixHeight = pixHeight + (RECT_HEIGHT);
+		pixWidth = pixWidth + (RECT_WIDTH);
 
+		//creates the image
 		CImg<unsigned char> bg(pixWidth, pixHeight, 2, 3, 255); // I have no idea what the 2 and 3 are but the 255 means a white background
 		drawEdges(graph,nodeToPosMap, &bg);
 		//actual loop to draw all nodes
@@ -107,7 +71,7 @@ public:
 			drawNode(nodes.at(i),nodeToPosMap[nodes.at(i).getID()], &bg);
 			//std::cout << std::endl << getText(node.getData()).at(0);
 		}
-		//drawArrowFrom(0, 0, 1, 1, &bg);
+	
 		
 
 		/* exists as test functionality, dispays pane of image and doesn't save and close until char is entered. Very poor resolution, better to view image manually.
@@ -115,35 +79,19 @@ public:
 		dsp.display(bg);
 		std::getchar();
 		*/
-		// C:\\Users\\Lybec\\Documents
-		//
+		
+		//saves image to path as bmp, other image types pretend to be supported but you really need other libraries
 		bg.save_bmp(path.c_str());
-	}
-
-
-	// returns coords of top left corner of square x. 
-	std::pair<int, int> getCornerOfPosition(int x) {
-		int trueX = (x % nodeWidth) * PIX_PER_NODE_WIDTH;
-		int trueY = (x / nodeWidth) * PIX_PER_NODE_HEIGHT;
-		std::cout << std::endl << "x: " << trueX;
-		std::cout << std::endl << "y: " << trueY << std::endl;
-		return std::pair<int, int> {trueX, trueY};
 	}
 
 
 
 private:
-	void drawRectByNode(int x, int y, CImg<unsigned char>* c) {
-		const unsigned char grey[] = { 220,220,220 };
-		int cornerPixX = x * PIX_PER_NODE_WIDTH;
-		int cornerPixY = y * PIX_PER_NODE_HEIGHT;
-		c->draw_rectangle(cornerPixX + SPACING, cornerPixY + SPACING, cornerPixX + PIX_PER_NODE_WIDTH - SPACING, cornerPixY + PIX_PER_NODE_HEIGHT - SPACING, grey, 1);
 
 
-
-	}
-
-	// draw arrow from box at xy to other box at xy(full size cords not pixles)
+	/*
+	* draw arrow from box at xy to other box at xy(full size cords not pixles)
+	*/ 
 	void drawArrowFrom(int fromX, int fromY, int toX, int toY, CImg<unsigned char>* c, bool stdArrow = true, std::string mult = "") {
 		const unsigned char black[] = { 0,0,0 };
 		const unsigned char white[] = { 255,255,255 };
@@ -201,7 +149,7 @@ private:
 			c->draw_line(endX, endY, arrowLineTwo.first, arrowLineTwo.second, black);
 
 			// multiplicity
-			// use the arrowhead line equations with double length to get positioning for the character
+			// use the arrowhead line equations with double length to get positioning for the character(currently uses the angle of the main line, not enough space for branching off with current spacing)
 			std::pair<double, double> multPosition;
 			multPosition.first = endX + (arrowHeadLen* 2) *cos((degOfSlope + 180) * PI / 180);
 			multPosition.second = endY + (arrowHeadLen * 2) *sin((degOfSlope + 180) * PI / 180);
@@ -209,12 +157,9 @@ private:
 		}
 	}
 
-	int nodesToPixles() {
-		pixHeight = nodeHeight * PIX_PER_NODE_HEIGHT;
-		pixWidth = nodeWidth * PIX_PER_NODE_WIDTH;
-	}
-
-	//gets the title of a class and wraps as appropriate.each element of the vector is a separate line.
+	/* 
+	* gets the title of a class and wraps as appropriate. each element of the vector is a separate line.
+	*/
 	std::vector <std::string> getText(ClassInfo classInfo) {
 		int maxLen = 10;
 		int maxlines = 2; // box is 40 pixles high, text at size 20
@@ -265,6 +210,9 @@ private:
 		return ret;
 	}
 
+	/*
+	* Given a set of coordinates, it prints two lines of text 
+	*/
 	void printTextOnSquare(double x, double y, std::vector<std::string> textVect, CImg<unsigned char>* c) {
 		//convert vector of strings to array of const char * , not sure why it doesn't need to be a const char * const as the type declaration says but it works and I no longer care
 		const int size = textVect.size();
@@ -286,20 +234,22 @@ private:
 		delete[] corrected;
 	}
 
+	/*
+	* Given a node and it's position, draw a grey rectangle at it and then write text over it
+	*/
 	void drawNode(Node<ClassInfo> n, ImVec2 nodePos, CImg<unsigned char>* c) {
 		//takes node, prints rectangle and writes the text over it
 		const unsigned char grey[] = { 220,220,220 };
-		//drawRectByNode(std::round(n.getX()/scrollX), std::round(n.getY()/scrollY), c);
 		c->draw_rectangle(nodePos.x, nodePos.y, nodePos.x + RECT_WIDTH, nodePos.y + RECT_HEIGHT, grey, 1);
 		printTextOnSquare(nodePos.x,nodePos.y, getText(n.getData()), c);
 	}
 	
+	/*
+	* Takes all edges, parses out the coordinates and multiplicity, and sends them to a function to draw the arrows
+	*/
 	void drawEdges(Graph<ClassInfo> g, std::unordered_map<int, ImVec2> nodeToPosMap,CImg<unsigned char>* c) {
 		auto edges = g.getEdges();
 		for (Edge e : edges) {
-			//edges use an ID value in node instead of pointers for some godawfull reason so I need to search the array for the correct nodes
-
-
 			ImVec2 startCords;
 			ImVec2 endCords;
 			int startId = e.getStartNode();
@@ -307,28 +257,6 @@ private:
 			startCords = nodeToPosMap[startId];
 			endCords = nodeToPosMap[endId];
 			
-			/*
-			//searches node list for a node of the correct id and takes node coords
-			for (Node<ClassInfo> n : g.getNodes()) {
-				bool ready = false; // bool exists to see if either end has already been found so when the second has, it knows to break out of the loop.
-				if (n.getID() == startId) {
-					startCords.x = std::round(n.getX() / scrollX);
-					startCords.y = std::round(n.getY() / scrollY);
-					if (ready) {
-						break;
-					}
-					else ready = true;
-				}
-				if(n.getID() == endId) {
-					endCords.x = std::round(n.getX() / scrollX);
-					endCords.y = std::round(n.getY() / scrollY);
-					if (ready) {
-						break;
-					}
-					else ready = true;
-				}
-			}
-			*/
 			if (e.getType() == Edge<ClassInfo>::Type::INHERITANCE) {
 				drawArrowFrom(startCords.x, startCords.y, endCords.x, endCords.y, c);
 			}
@@ -340,7 +268,6 @@ private:
 					drawArrowFrom(startCords.x, startCords.y, endCords.x, endCords.y, c, false, "n");
 				}
 			}
-			//drawArrowFrom(startCords.x, startCords.y, endCords.x, endCords.y, c);
 		}
 	}
 };
