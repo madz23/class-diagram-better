@@ -25,14 +25,6 @@ class PrintOnPaper
 public:
 
 	PrintOnPaper(Graph<ClassInfo> graph, std::unordered_map<int, ImVec2> nodeToPosMap,std::string path) {
-		const unsigned char bluegreen[] = { 0,170,255 };
-		const unsigned char grey[] = { 220,220,220 };
-		const unsigned char black[] = { 0,0,0 };
-		const unsigned char white[] = { 255,255,255 };
-		const unsigned char red[] = { 255,0,0 };
-		const unsigned char green[] = { 0,255,0 };
-		const unsigned char blue[] = { 0,0,255 };
-
 		
 		auto nodes = graph.getNodes();
 
