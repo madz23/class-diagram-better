@@ -1,5 +1,5 @@
 ///
-/// \Authors Hunter, Davis, Patience
+/// \Authors Hunter, Davis, Patience, Austin Lyman
 /// \file FileManager.hh
 /// \note A file manager with static methods for listing directories of files and reading in files as strings
 ///
