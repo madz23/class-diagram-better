@@ -189,27 +189,16 @@ int main(int, char**)
         }
 
         if (ImGui::Button("Print to image")) {
-            //PrintOnPaper p(graph,nodeToPosMap ,280, 280);
+            
             ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose a File", ".bmp",".", "");
             //printPicture(graph); // moved to below in the file dialog box code
 
-            /**            try {
-                ImGuiViewport* viewport = ImGui::GetMainViewport();
-                graph = GraphBuilder::build(buf, recursive);
-
-                graph.setPosition(viewport);
-                PrintOnPaper p(graph,280,280);
-            }
-            catch (std::filesystem::filesystem_error& e) {
-                std::cout << e.what() << std::endl;
-                std::cout << buf << std::endl;
-            }
-            **/
         }
 
         // display size vars
         ImVec2 maxSize = ImVec2((float)viewport->Size.x, (float)viewport->Size.y);// The full display area
         ImVec2 minSize = ImVec2((float)viewport->Size.x/2, (float)viewport->Size.y/2);//maxSize * 0.5f;  // Half the display area
+
         //for the directory chooser, copies string to the buffer associated with the path input box
         if (ImGuiFileDialog::Instance()->Display("ChooseDirDlgKey", ImGuiWindowFlags_NoCollapse, minSize, maxSize)){
         // action if OK
@@ -230,11 +219,10 @@ int main(int, char**)
             if (ImGuiFileDialog::Instance()->IsOk()) {
                 std::string correctedPath = ImGuiFileDialog::Instance()->GetFilePathName();
                 int lastSwapped = 0;
-                while (correctedPath.find("\\",lastSwapped) != string::npos) {
+                while (correctedPath.find("\\",lastSwapped) != string::npos) { 
                     int posNext = correctedPath.find("\\", lastSwapped);
                         correctedPath.replace(posNext, 1, "\\\\");
                         lastSwapped = posNext += 2;
-                    std::cout << correctedPath;
                 }
                 std::cout << correctedPath;
                 printPicture(graph,correctedPath);

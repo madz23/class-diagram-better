@@ -1,3 +1,11 @@
+/*
+* 
+* Author: Lybeck, Tim
+* File: PrintOnPaper.h
+* note: Allows for standard class structure to be printed to an image in the same format as a gui and saved to disk
+* 
+*/
+
 #pragma once
 #include <iostream>
 #include "CImg.h"
@@ -13,6 +21,7 @@
 using namespace cimg_library;
 class PrintOnPaper
 {
+	//size of the nodes in pixles
 	const int RECT_WIDTH = 100;
 	const int RECT_HEIGHT = 40;
 
@@ -91,6 +100,7 @@ private:
 		const unsigned char white[] = { 255,255,255 };
 		int yDif = fromY - toY;
 		int xDif = toX - fromX;
+		//values to add to the end coordinates
 		int yAdd;
 		int xAdd;
 		bool minusX = false;
@@ -116,7 +126,7 @@ private:
 		else if (xDif == 0) { // vertical
 			xAdd = .5 * RECT_WIDTH;
 		}
-		int startX = fromX + RECT_WIDTH/2;//convert node positions to pixles
+		int startX = fromX + RECT_WIDTH/2;//This takes the start coords and moves them to the center of the node. 
 		int startY = fromY + RECT_HEIGHT/2;
 		int endX = toX + xAdd;
 		int endY = toY + yAdd;
@@ -156,7 +166,7 @@ private:
 	*/
 	std::vector <std::string> getText(ClassInfo classInfo) {
 		int maxLen = 10;
-		int maxlines = 2; // box is 40 pixles high, text at size 20
+		int maxlines = 2; // box is 40 pixles high, text at size 20. as currently set up, it will only print two lines from the title wrapped at ten chars.
 		std::vector<std::string> ret;
 		// Name
 		std::string temp = classInfo.getName();
